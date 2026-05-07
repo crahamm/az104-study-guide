@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "flashcard-creator": {
+      "source": "szeyu/vibe-study-skills",
+      "sourceType": "github",
+      "skillPath": "skills/flashcard-creator/SKILL.md",
+      "computedHash": "4762935f979616f28676f30410515410b24b458b896f5e76e7d16737726f979e"
+    },
+    "quiz-maker": {
+      "source": "onewave-ai/claude-skills",
+      "sourceType": "github",
+      "skillPath": "quiz-maker/SKILL.md",
+      "computedHash": "1799bb34bb08244cbb1b8d1d91c753fa53283867146c5fa82abcefeb23863314"
+    }
+  }
+}
