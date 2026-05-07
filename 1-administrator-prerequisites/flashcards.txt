@@ -1,0 +1,73 @@
+What is Azure Cloud Shell?	A browser-accessible command-line environment for managing Azure resources.	az104 administrator-prerequisites cloud-shell
+Which shell experiences can you choose in Azure Cloud Shell?	Bash or PowerShell.	az104 administrator-prerequisites cloud-shell
+Why does Cloud Shell reduce local setup work?	Microsoft manages the environment, so Azure CLI and Azure PowerShell modules are already available and kept current.	az104 administrator-prerequisites cloud-shell
+How is Azure Cloud Shell authenticated?	You sign in with your Azure account, and the shell uses the permissions and resource access assigned to that account.	az104 administrator-prerequisites cloud-shell
+What types of Azure resources can Cloud Shell manage?	Azure resources such as virtual machines, storage, networking, and other resources accessible through Azure CLI or PowerShell.	az104 administrator-prerequisites cloud-shell
+What are three common ways to open Azure Cloud Shell?	Use `https://shell.azure.com`, open it from the Azure portal, or launch it from Microsoft Learn code snippets.	az104 administrator-prerequisites cloud-shell
+What is allocated when you start an Azure Cloud Shell session?	A temporary host preconfigured with Bash, PowerShell, Azure CLI, Azure PowerShell, and common tools.	az104 administrator-prerequisites cloud-shell
+What happens after 20 minutes of inactivity in Azure Cloud Shell?	The Cloud Shell session terminates and the session state is lost.	az104 administrator-prerequisites cloud-shell
+What persists after an inactive Azure Cloud Shell session terminates?	Files stored in CloudDrive persist between sessions.	az104 administrator-prerequisites cloud-shell
+What should you use to keep scripts available across Cloud Shell sessions and devices?	CloudDrive.	az104 administrator-prerequisites cloud-shell
+What Azure storage feature can Cloud Shell map for file access?	An Azure File Share.	az104 administrator-prerequisites cloud-shell
+What regional limitation applies to Cloud Shell storage?	The Azure File Share used by Cloud Shell is tied to a specific region.	az104 administrator-prerequisites cloud-shell
+What should you use to make small edits to scripts stored in CloudDrive?	The Cloud Shell editor.	az104 administrator-prerequisites cloud-shell
+In Classic Cloud Shell mode, what command opens a file in the Cloud Shell editor?	`code <filename>`.	az104 administrator-prerequisites cloud-shell
+When is Azure Cloud Shell a good choice?	When you need a secure Azure command line from a browser-based device without installing local tools.	az104 administrator-prerequisites cloud-shell
+When should you avoid using Azure Cloud Shell for scripts?	Avoid it for long-running scripts or activity that might be interrupted by the 20-minute inactivity timeout.	az104 administrator-prerequisites cloud-shell
+Why is Cloud Shell not a good fit when you need `sudo`?	Cloud Shell does not provide full administrator privileges such as `sudo` access.	az104 administrator-prerequisites cloud-shell
+Why is Cloud Shell not ideal for heavily customized tooling?	It has a limited Microsoft-managed environment, so unsupported custom tools may require a VM, container, or other dedicated environment.	az104 administrator-prerequisites cloud-shell
+How many Azure Cloud Shell instances can you use at one time?	Only one instance at a time.	az104 administrator-prerequisites cloud-shell
+What is the best Cloud Shell choice for a frequently used operations script?	Upload the script to CloudDrive so it is available in future Cloud Shell sessions.	az104 administrator-prerequisites cloud-shell
+What is infrastructure as code?	Describing required infrastructure through code so it can be versioned, reviewed, reused, and deployed consistently.	az104 administrator-prerequisites arm-templates
+What are ARM templates?	JSON files that define Azure infrastructure and configuration for deployment.	az104 administrator-prerequisites arm-templates
+What syntax style do ARM templates use?	Declarative syntax.	az104 administrator-prerequisites arm-templates
+What does declarative syntax mean in an ARM template?	You describe the desired resources and properties, and Azure Resource Manager handles how to deploy them.	az104 administrator-prerequisites arm-templates
+How does imperative scripting differ from ARM template deployment?	Imperative scripting specifies deployment steps, while ARM templates declare the desired end state.	az104 administrator-prerequisites arm-templates
+What does it mean that ARM template deployments are idempotent?	You can deploy the same template repeatedly and get the same resource types in the same state.	az104 administrator-prerequisites arm-templates
+What happens if an unchanged ARM template is deployed again?	Azure Resource Manager does not make changes to existing deployed resources.	az104 administrator-prerequisites arm-templates
+What happens if an ARM template changes and is redeployed?	Azure Resource Manager applies only the required changes.	az104 administrator-prerequisites arm-templates
+What are common benefits of infrastructure as code?	Consistent configurations, improved scalability, faster deployments, and better traceability.	az104 administrator-prerequisites arm-templates
+What Azure service orchestrates ARM template deployments?	Azure Resource Manager.	az104 administrator-prerequisites arm-templates
+How does Azure Resource Manager improve ARM template deployment order?	It creates resources in the correct order based on dependencies and can create resources in parallel when possible.	az104 administrator-prerequisites arm-templates
+What built-in check does Resource Manager perform before deployment starts?	It validates the template to help ensure the deployment can succeed.	az104 administrator-prerequisites arm-templates
+What ARM template section is required and points to the JSON schema file?	`$schema`.	az104 administrator-prerequisites arm-templates
+What ARM template section is required and documents the template version?	`contentVersion`.	az104 administrator-prerequisites arm-templates
+What ARM template section defines values supplied during deployment?	`parameters`.	az104 administrator-prerequisites arm-templates
+What ARM template section defines reusable values that simplify expressions?	`variables`.	az104 administrator-prerequisites arm-templates
+What ARM template section defines user-defined functions?	`functions`.	az104 administrator-prerequisites arm-templates
+What ARM template section defines the actual Azure resources to deploy or update?	`resources`.	az104 administrator-prerequisites arm-templates
+What ARM template section returns values after deployment?	`outputs`.	az104 administrator-prerequisites arm-templates
+Which ARM template section is optional and defines a collection of API versions for resource types?	`apiProfile`.	az104 administrator-prerequisites arm-templates
+Which ARM template term is not a section: `parameters`, `resources`, `outputs`, or `idempotent`?	`idempotent` is not a template section; it is a deployment behavior.	az104 administrator-prerequisites arm-templates
+What command signs in to Azure using Azure CLI?	`az login`.	az104 administrator-prerequisites arm-templates azure-cli
+What Azure CLI command creates a resource group?	`az group create --name <resource-group-name> --location <location>`.	az104 administrator-prerequisites arm-templates azure-cli
+What Azure CLI command sets a default resource group?	`az configure --defaults group="<resource-group-name>"`.	az104 administrator-prerequisites arm-templates azure-cli
+What Azure CLI command deploys a template at resource group scope?	`az deployment group create --name <deployment-name> --template-file <template-file>`.	az104 administrator-prerequisites arm-templates azure-cli
+Which Azure CLI deployment command is preferred over the older `az group deployment create`?	`az deployment group create`.	az104 administrator-prerequisites arm-templates azure-cli
+What are three ways to deploy ARM templates?	Deploy a local template, deploy a linked template, or deploy through a continuous deployment pipeline.	az104 administrator-prerequisites arm-templates
+When should linked templates be used?	Use linked templates to break complex solutions into smaller templates triggered by a main template.	az104 administrator-prerequisites arm-templates
+How can linked ARM templates be secured?	Store linked templates securely and access them with a SAS token.	az104 administrator-prerequisites arm-templates
+What CI/CD tools are commonly used for ARM template deployments?	Azure Pipelines and GitHub Actions.	az104 administrator-prerequisites arm-templates
+What format identifies a resource provider and resource type in an ARM template?	`{resource-provider}/{resource-type}`.	az104 administrator-prerequisites arm-templates
+What is the resource type for Azure Storage accounts?	`Microsoft.Storage/storageAccounts`.	az104 administrator-prerequisites arm-templates storage
+What storage account `kind` was used in the module examples?	`StorageV2`.	az104 administrator-prerequisites arm-templates storage
+What storage SKU was used as the basic default example in the module?	`Standard_LRS`.	az104 administrator-prerequisites arm-templates storage
+What template expression places a resource in the resource group's location?	`[resourceGroup().location]`.	az104 administrator-prerequisites arm-templates
+What are the storage account naming rules from this module?	Storage account names must be globally unique, 3 to 24 characters, and use only lowercase letters, numbers, and hyphens.	az104 administrator-prerequisites arm-templates storage
+Why should names and SKUs often be parameters in ARM templates?	They vary by environment, naming convention, or deployment requirement.	az104 administrator-prerequisites arm-templates parameters
+What is the maximum number of parameters in an ARM template?	256 parameters.	az104 administrator-prerequisites arm-templates parameters
+What ARM template parameter property restricts inputs to a defined list?	`allowedValues`.	az104 administrator-prerequisites arm-templates parameters
+What ARM template parameter properties validate string or array length?	`minLength` and `maxLength`.	az104 administrator-prerequisites arm-templates parameters
+What ARM template parameter properties validate integer range?	`minValue` and `maxValue`.	az104 administrator-prerequisites arm-templates parameters
+What parameter metadata field should you use to explain a parameter?	`metadata.description`.	az104 administrator-prerequisites arm-templates parameters
+What ARM template parameter types should be used for sensitive strings?	`secureString`.	az104 administrator-prerequisites arm-templates parameters security
+What ARM template parameter type should be used for sensitive JSON objects?	`secureObject`.	az104 administrator-prerequisites arm-templates parameters security
+Why should passwords and secrets not be hardcoded in ARM templates?	They can be exposed; use parameters with `secureString` or `secureObject` instead.	az104 administrator-prerequisites arm-templates parameters security
+How do you reference a parameter named `storageName` in an ARM template?	`[parameters('storageName')]`.	az104 administrator-prerequisites arm-templates parameters
+How can a deployment pass a `storageSKU` value from Azure CLI?	Use `--parameters storageSKU=<value>` with `az deployment group create`.	az104 administrator-prerequisites arm-templates parameters azure-cli
+What happens if a deployment supplies a parameter value outside `allowedValues`?	The deployment validation fails.	az104 administrator-prerequisites arm-templates parameters
+What are ARM template outputs used for?	Returning values after a successful deployment, such as endpoints needed by later tasks.	az104 administrator-prerequisites arm-templates outputs
+What ARM template function retrieves runtime state for a deployed resource?	`reference()`.	az104 administrator-prerequisites arm-templates outputs
+What output expression returns primary endpoints for a storage account parameter named `storageName`?	`[reference(parameters('storageName')).primaryEndpoints]`.	az104 administrator-prerequisites arm-templates outputs storage
+Where can you view ARM template deployment history and outputs in Azure?	In the Azure portal under the resource group's deployments.	az104 administrator-prerequisites arm-templates
+Which AZ-104 objective area includes ARM template or Bicep automation?	Deploy and manage Azure compute resources.	az104 administrator-prerequisites exam-objectives
