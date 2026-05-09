@@ -2,170 +2,194 @@
 
 ## Core Idea
 
-Azure Resource Manager templates, or ARM templates, are JSON files that define Azure infrastructure and configuration as code. They use declarative syntax: you describe the desired resources and properties, and Azure Resource Manager handles the deployment steps.
+Azure Resource Manager templates, or ARM templates, are JSON files that define Azure infrastructure and configuration declaratively. They support infrastructure as code by letting you store, version, validate, and redeploy infrastructure definitions consistently.
 
-ARM templates support infrastructure as code because they can be versioned, reviewed, reused, and stored with application source code.
+This module supports the AZ-104 objective `Automate deployment of resources by using Azure Resource Manager (ARM) templates or Bicep files`.
 
 ## Key Capabilities
 
-- Define Azure infrastructure in JSON.
-- Deploy consistent environments repeatedly.
-- Store infrastructure definitions in source control.
-- Use parameters to make deployments flexible.
-- Use outputs to return values after deployment.
-- Validate templates before deployment starts.
-- Let Azure Resource Manager orchestrate dependencies and create resources in the correct order.
-- Deploy resources in parallel when possible.
-- Integrate deployments into CI/CD tools such as Azure Pipelines or GitHub Actions.
+- Define Azure resources in JSON.
+- Deploy infrastructure consistently with declarative syntax.
+- Use templates as infrastructure as code.
+- Version templates in source control.
+- Deploy templates with Azure CLI or Azure PowerShell.
+- Add flexibility with parameters.
+- Return deployment values with outputs.
+- Use Visual Studio Code and ARM template tooling for authoring.
 
 ## ARM Template Structure
 
 Common ARM template sections:
 
-- `$schema`: Required. Points to the JSON schema for the deployment scope.
-- `contentVersion`: Required. Documents the template version, such as `1.0.0.0`.
-- `apiProfile`: Optional. Defines a collection of API versions for resource types.
-- `parameters`: Optional. Values supplied during deployment.
-- `variables`: Optional. Reusable values that simplify expressions.
-- `functions`: Optional. User-defined functions for repeated expressions.
-- `resources`: Required. The Azure resources to deploy or update.
-- `outputs`: Optional. Values returned after deployment.
+- `$schema`: required. Points to the JSON schema for the template.
+- `contentVersion`: required. Tracks the version of the template.
+- `apiProfile`: optional. Defines API versions for resource types.
+- `parameters`: optional. Values supplied at deployment time.
+- `variables`: optional. Values used to simplify expressions.
+- `functions`: optional. User-defined functions.
+- `resources`: required. Azure resources to deploy or update.
+- `outputs`: optional. Values returned after deployment.
 
-Exam point: `idempotent` is not a template section. It is a behavior of ARM template deployments.
+Exam point: `idempotent` is an ARM template behavior, not a template section.
 
-## Infrastructure As Code Benefits
+## Infrastructure As Code
 
-Infrastructure as code provides:
+Infrastructure as code means infrastructure is described in code and managed like application code.
+
+Benefits:
 
 - Consistent configurations.
 - Improved scalability.
 - Faster deployments.
 - Better traceability.
+- Source control and versioning.
+- CI/CD integration with tools such as Azure Pipelines or GitHub Actions.
 
-ARM templates are idempotent. If you redeploy the same template with no changes, Azure Resource Manager does not make changes to existing resources. If the template changes, Resource Manager applies only the required changes.
+ARM templates are declarative. You define the desired end state, and Azure Resource Manager handles the deployment sequence.
 
-## Resource Definitions
+## Deployment Behavior
 
-Resources are declared in the `resources` section.
+ARM templates are `idempotent`.
 
-Each resource needs a resource provider and resource type in the form:
+This means:
 
-```text
-{resource-provider}/{resource-type}
-```
+- Running the same unchanged template again does not recreate or unnecessarily modify resources.
+- Azure Resource Manager creates missing resources.
+- Azure Resource Manager updates resources only when template changes require it.
+
+Azure Resource Manager also:
+
+- Validates the template before deployment.
+- Orchestrates dependencies.
+- Creates resources in parallel when possible.
+- Records deployment history in the Azure portal.
+
+## Deployment Commands
+
+Common Azure CLI commands:
+
+- Sign in: `az login`
+- List locations: `az account list-locations`
+- Create a resource group: `az group create`
+- Set defaults: `az configure --defaults`
+- Deploy to a resource group: `az deployment group create`
+
+Use `az deployment group create`, not the older `az group deployment create`.
 
 Example:
 
-```text
-Microsoft.Storage/storageAccounts
-```
-
-Important storage account naming rule from the module: storage account names must be globally unique, 3 to 24 characters, and use only lowercase letters, numbers, and hyphens.
-
-## Deploying Templates
-
-Common local deployment flow:
-
-1. Sign in to Azure:
-
-```bash
-az login
-```
-
-2. Create a resource group:
-
-```bash
-az group create --name <resource-group-name> --location <location>
-```
-
-3. Optionally set a default resource group:
-
-```bash
-az configure --defaults group="<resource-group-name>"
-```
-
-4. Deploy a template at resource group scope:
-
 ```bash
 az deployment group create \
-  --name <deployment-name> \
+  --name addstorage \
+  --resource-group myResourceGroup \
   --template-file azuredeploy.json
 ```
 
-Exam point: prefer `az deployment group create`. The older `az group deployment create` command is deprecated.
+PowerShell equivalent:
+
+```powershell
+New-AzResourceGroupDeployment
+```
+
+## Resources
+
+Resources are defined with a resource provider and resource type.
+
+Example:
+
+- Provider: `Microsoft.Storage`
+- Resource type: `storageAccounts`
+- Full type: `Microsoft.Storage/storageAccounts`
+
+Resource definitions commonly include:
+
+- `type`
+- `apiVersion`
+- `name`
+- `location`
+- `sku`
+- `kind`
+- `properties`
+
+Storage account exam detail:
+
+- Storage account names must be globally unique.
+- Names must be `3` to `24` characters.
+- Names must use lowercase letters, numbers, and hyphens.
 
 ## Parameters
 
-Parameters let you provide deployment-specific values at runtime. Use parameters for values that vary between environments, such as names, SKUs, sizes, capacity, and secrets.
+Use parameters for values that vary between deployments.
 
-Important limits and types:
+Good parameter candidates:
 
-- A template can have up to 256 parameters.
-- Common parameter types include `string`, `secureString`, `int`, `bool`, `object`, `secureObject`, and `array`.
-- Use `allowedValues` to restrict acceptable inputs.
-- Use `minLength`, `maxLength`, `minValue`, and `maxValue` to validate parameter values.
-- Use `metadata.description` to document what a parameter is for.
+- Resource names.
+- SKU.
+- Size.
+- Capacity.
+- Environment-specific settings.
+- Usernames and secrets.
 
-Security rule: never hardcode usernames, passwords, or secrets. Use parameters, and use `secureString` or `secureObject` for sensitive values.
+Parameter facts:
 
-Reference a parameter in a template with:
+- Templates support up to `256` parameters.
+- Use `allowedValues` to restrict acceptable values.
+- Use `defaultValue` when a safe default exists.
+- Use `metadata.description` to document parameters.
+- Use `secureString` for passwords or secrets.
+- Use `secureObject` for sensitive JSON object data.
 
-```json
-"[parameters('storageName')]"
-```
-
-Pass parameter values during deployment with:
-
-```bash
-az deployment group create \
-  --name <deployment-name> \
-  --template-file azuredeploy.json \
-  --parameters storageSKU=Standard_LRS storageName=<unique-name>
-```
+Do not hardcode usernames, passwords, or secrets in templates.
 
 ## Outputs
 
-Outputs return values after a successful deployment. They are useful when a later task needs deployment-generated information, such as endpoints.
+Use `outputs` to return values after deployment.
 
-Example output pattern:
+Examples:
 
-```json
-"outputs": {
-  "storageEndpoint": {
-    "type": "object",
-    "value": "[reference(parameters('storageName')).primaryEndpoints]"
-  }
-}
-```
+- Storage account endpoints.
+- Resource IDs.
+- Connection information needed by another deployment step.
 
-The `reference()` function retrieves runtime state for a deployed resource.
+The `reference()` function can read runtime state, such as a storage account's `primaryEndpoints`.
 
-## When To Use ARM Templates
+## When To Use
 
 Use ARM templates when you need to:
 
-- Define Azure infrastructure as code.
-- Reuse the same infrastructure definition across environments.
-- Deploy repeatable, consistent resources.
-- Track infrastructure changes in source control.
-- Parameterize deployments for development, test, and production.
-- Integrate Azure deployments into CI/CD.
+- Deploy Azure resources consistently.
+- Repeat deployments across environments.
+- Store infrastructure definitions in source control.
+- Track deployment history.
+- Validate infrastructure before deployment.
+- Integrate infrastructure deployment into CI/CD.
+- Break complex deployments into linked or nested templates.
+
+## When Not To Use
+
+Do not use hardcoded templates when the value should vary per environment. Use parameters instead.
+
+Do not use plain `string` or default values for secrets. Use `secureString` or `secureObject`.
+
+For new infrastructure as code authoring, Microsoft recommends `Bicep` for a simpler authoring experience, though AZ-104 still expects ARM template literacy.
 
 ## Exam Triggers
 
-- JSON file defining Azure infrastructure: ARM template.
-- Declarative deployment syntax: ARM template.
-- Same template can run repeatedly without unwanted changes: idempotent.
-- Values supplied at deployment time: parameters.
-- Sensitive values in a template: `secureString` or `secureObject`.
-- Restrict allowed deployment values: `allowedValues`.
-- Return deployment values after success: outputs.
-- Get runtime state of a resource: `reference()`.
-- Resource group deployment command: `az deployment group create`.
-- Actual Azure resources to deploy: `resources` section.
+- JSON infrastructure definition: ARM template.
+- Desired state rather than step-by-step commands: declarative syntax.
+- Same deployment run again with no changes: no resource changes because templates are `idempotent`.
+- Required resource section: `resources`.
+- Required schema section: `$schema`.
+- Required version section: `contentVersion`.
+- Values supplied at deployment time: `parameters`.
+- Values returned after deployment: `outputs`.
+- Sensitive value parameter type: `secureString`.
+- Deploy template to resource group with Azure CLI: `az deployment group create`.
+- Old deployment command to avoid: `az group deployment create`.
+- Storage account provider/type: `Microsoft.Storage/storageAccounts`.
 
 ## Knowledge Check Answers
 
 1. An ARM template is a JSON file that defines the infrastructure and configuration for a deployment.
 2. `idempotent` is not an ARM template element.
-3. If an unchanged idempotent template is deployed again, Azure Resource Manager does not change the deployed resources.
+3. If an unchanged template is run again, Azure Resource Manager does not make changes to the deployed resources.
