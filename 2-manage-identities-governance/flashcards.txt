@@ -1,0 +1,135 @@
+What is Microsoft Entra ID?	Microsoft's cloud-based identity and access management service for authentication, authorization, access policies, and cloud app identity.	az104 identities-governance entra-id
+What traditional directory service is Microsoft Entra ID often compared with?	Active Directory Domain Services (AD DS).	az104 identities-governance entra-id ad-ds
+What protocol does Microsoft Entra ID primarily use for authorization?	OAuth.	az104 identities-governance entra-id protocols
+Which authentication protocols are commonly associated with Microsoft Entra ID?	SAML, WS-Federation, and OpenID Connect.	az104 identities-governance entra-id protocols
+Which directory service uses LDAP, Kerberos, OUs, GPOs, and domain trusts?	Active Directory Domain Services (AD DS).	az104 identities-governance ad-ds
+Does Microsoft Entra ID use organizational units or Group Policy Objects?	No. Microsoft Entra ID uses a flat structure and does not use OUs or GPOs.	az104 identities-governance entra-id exam-trap
+What does deploying AD DS on an Azure VM give you?	Traditional AD DS running on a virtual machine, not Microsoft Entra ID.	az104 identities-governance ad-ds exam-trap
+What Microsoft Entra feature detects risky users and risky sign-ins?	Microsoft Entra ID Protection.	az104 identities-governance entra-id p2
+What Microsoft Entra feature governs just-in-time or time-bound privileged role activation?	Microsoft Entra Privileged Identity Management.	az104 identities-governance entra-id p2
+Which Microsoft Entra plan includes ID Protection and Privileged Identity Management?	Microsoft Entra ID P2.	az104 identities-governance entra-id p2
+Which Microsoft Entra plan adds Conditional Access, SSPR with password writeback, and Entra Connect Health?	Microsoft Entra ID P1.	az104 identities-governance entra-id p1
+What service provides managed domain services such as domain join, LDAP, Kerberos, and NTLM without managing domain controllers?	Microsoft Entra Domain Services.	az104 identities-governance entra-domain-services
+What is one limitation of Microsoft Entra Domain Services compared with traditional AD DS?	It has a flatter organizational unit structure and is not a full replacement for every AD DS scenario.	az104 identities-governance entra-domain-services exam-trap
+What are cloud identities in Microsoft Entra ID?	User accounts that exist only in Microsoft Entra ID.	az104 identities-governance users
+What are directory-synchronized identities?	Identities that originate in on-premises Windows Server AD and sync to Microsoft Entra ID.	az104 identities-governance users hybrid
+What are guest users in Microsoft Entra ID?	External users invited into the tenant, such as vendors, contractors, or partners.	az104 identities-governance users
+How long are deleted Microsoft Entra users restorable?	30 days.	az104 identities-governance users
+Which Microsoft Entra roles can restore or permanently delete users?	Global administrator and User administrator.	az104 identities-governance users roles
+What group type should you use primarily for access management and permissions?	Security group.	az104 identities-governance groups
+What group type should you use for shared mailbox, calendar, files, and SharePoint collaboration?	Microsoft 365 group.	az104 identities-governance groups
+What group membership type requires members to be added manually?	Assigned membership.	az104 identities-governance groups
+What group membership type adds users automatically based on user attributes?	Dynamic User membership.	az104 identities-governance groups
+What group membership type adds devices automatically based on device attributes?	Dynamic Device membership.	az104 identities-governance groups
+What license is required for dynamic group membership?	Microsoft Entra ID P1.	az104 identities-governance groups licensing
+Do Microsoft 365 groups support dynamic device membership?	No. Dynamic device membership applies to security groups only.	az104 identities-governance groups exam-trap
+What is group-based licensing?	Assigning product licenses to a group so members automatically receive or lose inherited licenses based on membership.	az104 identities-governance licenses
+What should be configured before assigning licenses in multi-region tenants?	The user's usage location.	az104 identities-governance licenses
+What does `CountViolation` mean in group-based licensing?	There are not enough available licenses.	az104 identities-governance licenses errors
+What does `MutuallyExclusiveViolation` mean in group-based licensing?	The user has conflicting service plans or licenses.	az104 identities-governance licenses errors
+What does `DependencyViolation` mean in group-based licensing?	A service plan being removed is required by another product or dependent service.	az104 identities-governance licenses errors
+What does `ProhibitedInUsageLocationViolation` mean?	The service is not available for the user's usage location.	az104 identities-governance licenses errors
+Which device identity model is best for BYOD and personal devices?	Microsoft Entra registered.	az104 identities-governance devices
+Which device identity model is best for cloud-first organization-owned Windows devices?	Microsoft Entra joined.	az104 identities-governance devices
+Which device identity model is best when devices still depend on on-premises AD?	Hybrid Microsoft Entra joined.	az104 identities-governance devices hybrid
+What device state means a device is joined to on-premises AD and registered with Microsoft Entra ID?	Hybrid Microsoft Entra joined.	az104 identities-governance devices hybrid
+What should new hybrid identity deployments use instead of device writeback?	Cloud Kerberos Trust.	az104 identities-governance devices exam-trap
+What are custom security attributes?	Tenant-wide business-specific key-value pairs assigned to Microsoft Entra objects.	az104 identities-governance custom-security-attributes
+What data types can custom security attributes store?	Boolean, integer, or string values.	az104 identities-governance custom-security-attributes
+Are custom security attributes supported in Microsoft Entra Domain Services, SAML claims, or JWT claims?	No. They are not supported in Entra Domain Services, SAML token claims, or JWT claims.	az104 identities-governance custom-security-attributes exam-trap
+What provisioning standard automates user and group provisioning between identity systems and applications?	SCIM 2.0.	az104 identities-governance provisioning
+What should you use when a source system does not expose a SCIM endpoint?	API-driven inbound provisioning.	az104 identities-governance provisioning
+What are the two main Azure infrastructure categories from the core architecture module?	Physical infrastructure and management infrastructure.	az104 identities-governance azure-architecture
+What is an Azure region?	A geographic area containing one or more nearby datacenters connected with low-latency networking.	az104 identities-governance azure-architecture regions
+What are Azure availability zones?	Physically separate datacenters within a region with independent power, cooling, and networking.	az104 identities-governance azure-architecture availability-zones
+How many availability zones do availability-zone-enabled regions have at minimum?	At least three.	az104 identities-governance azure-architecture availability-zones
+What are region pairs used for?	Regional disaster recovery planning, staged updates, and data residency planning.	az104 identities-governance azure-architecture regions
+How far apart are most Azure region pairs?	At least 300 miles apart.	az104 identities-governance azure-architecture regions
+Name three examples of global Azure services.	Microsoft Entra ID, Azure Traffic Manager, and Azure DNS.	az104 identities-governance azure-architecture global-services
+What are sovereign Azure regions used for?	Legal, compliance, or government requirements that require isolated Azure instances.	az104 identities-governance azure-architecture sovereign
+Who operates Azure China regions?	21Vianet.	az104 identities-governance azure-architecture sovereign
+What is an Azure resource group?	A logical container for Azure resources that share lifecycle, access, policy, or management needs.	az104 identities-governance resource-groups
+Can an Azure resource belong to more than one resource group at a time?	No. A resource can be in only one resource group at a time.	az104 identities-governance resource-groups
+Can Azure resource groups be nested?	No. Resource groups cannot be nested.	az104 identities-governance resource-groups exam-trap
+Can Azure resource groups be renamed after creation?	No. Resource groups cannot be renamed after creation.	az104 identities-governance resource-groups exam-trap
+What happens when you delete a resource group?	The resources inside the resource group are deleted.	az104 identities-governance resource-groups
+What are Azure subscriptions boundaries for?	Billing, access control, management, and scale.	az104 identities-governance subscriptions
+What should you use to apply governance across many subscriptions?	Management groups.	az104 identities-governance management-groups
+What is the top management group in every Microsoft Entra tenant?	The Tenant Root Group.	az104 identities-governance management-groups
+How deep can management groups be nested below the tenant root group?	Up to six levels, not counting the root or subscription level.	az104 identities-governance management-groups
+How many management groups can a single directory support?	Up to 10,000 management groups.	az104 identities-governance management-groups
+What is Azure Policy used for?	Enforcing organizational standards and assessing compliance at scale.	az104 identities-governance azure-policy
+Which Cloud Adoption Framework methodology includes cloud governance guidance?	The Govern methodology.	az104 identities-governance azure-policy governance
+What are the five core disciplines of cloud governance?	Cost management, security baseline, resource consistency, identity baseline, and deployment acceleration.	az104 identities-governance azure-policy governance
+What are the Azure governance scope levels from broadest to narrowest?	Management group, subscription, resource group, resource.	az104 identities-governance azure-policy scope
+What is Azure Resource Manager?	The Azure deployment and management service for creating, updating, and deleting resources.	az104 identities-governance arm azure-policy
+What is the Azure control plane?	Management operations such as creating resources, assigning RBAC, deploying templates, auditing, monitoring, tagging, and policy evaluation.	az104 identities-governance arm control-plane
+What is the Azure data plane?	Service-specific data operations, such as reading secrets, querying databases, or uploading files.	az104 identities-governance data-plane
+In Azure Policy, what does Greenfield mean?	A policy exists before a resource is created or updated.	az104 identities-governance azure-policy greenfield
+In Azure Policy, what does Brownfield mean?	Resources already exist before a policy is assigned.	az104 identities-governance azure-policy brownfield
+In a Greenfield request, what is evaluated first: RBAC or Azure Policy?	RBAC is evaluated before Azure Policy.	az104 identities-governance azure-policy rbac
+How often does the automatic full Azure Policy compliance scan run?	Every 24 hours.	az104 identities-governance azure-policy compliance
+What command can manually trigger an Azure Policy compliance scan?	`az policy state trigger-scan`.	az104 identities-governance azure-policy azure-cli
+What are Azure Policy definitions?	Resources that describe compliance conditions and the effect to take when conditions match.	az104 identities-governance azure-policy definitions
+What are Azure Policy initiatives?	Groups of policy definitions managed and assigned as one policy set.	az104 identities-governance azure-policy initiatives
+What are Azure Policy assignments?	Resources that apply a policy definition or initiative to a scope.	az104 identities-governance azure-policy assignments
+What are Azure Policy exemptions?	Approved exclusions for a resource hierarchy or resource from policy evaluation.	az104 identities-governance azure-policy exemptions
+What are Azure Policy attestations used for?	Manually setting compliance state for resources or scopes targeted by manual policies.	az104 identities-governance azure-policy attestations
+What Azure Policy feature brings noncompliant resources into compliance for supported effects?	Remediation tasks.	az104 identities-governance azure-policy remediation
+What are the two main parts of an Azure Policy definition?	A condition and an effect.	az104 identities-governance azure-policy definitions
+What does the `if` block define in an Azure Policy `policyRule`?	The conditions that determine when the policy applies.	az104 identities-governance azure-policy definitions
+What does the `then` block define in an Azure Policy `policyRule`?	The effect that occurs when the condition is true.	az104 identities-governance azure-policy definitions
+What Azure Policy effect blocks noncompliant requests?	`deny`.	az104 identities-governance azure-policy effects
+What Azure Policy effect logs noncompliance without blocking the request?	`audit`.	az104 identities-governance azure-policy effects
+What Azure Policy effect adds, updates, or removes properties or tags during create or update?	`modify`.	az104 identities-governance azure-policy effects
+What Azure Policy effect deploys a related resource when the condition is met?	`deployIfNotExists`.	az104 identities-governance azure-policy effects
+What Azure Policy effect requires self-attestation?	`manual`.	az104 identities-governance azure-policy effects
+What Azure Policy effect prevents policy evaluation entirely?	`disabled`.	az104 identities-governance azure-policy effects
+What Azure Policy assignment setting lets you test outcomes without enforcing effects?	`enforcementMode` set to `DoNotEnforce`.	az104 identities-governance azure-policy enforcement-mode
+How is `enforcementMode: DoNotEnforce` different from the `disabled` effect?	`DoNotEnforce` still evaluates compliance without applying the effect; `disabled` prevents evaluation.	az104 identities-governance azure-policy exam-trap
+What are the two recommended steps for safe Azure Policy deployment?	Start with `enforcementMode` disabled, then deploy through rings.	az104 identities-governance azure-policy safe-deployment
+What service can route Azure Policy state change events to handlers?	Azure Event Grid.	az104 identities-governance azure-policy event-grid
+What is Azure RBAC?	Azure's authorization system for managing who can access Azure resources, what they can do, and where access applies.	az104 identities-governance rbac
+What three elements make up an Azure RBAC role assignment?	Security principal, role definition, and scope.	az104 identities-governance rbac
+What is the security principal in Azure RBAC?	The user, group, service principal, or managed identity that receives access.	az104 identities-governance rbac
+What is a role definition in Azure RBAC?	A named collection of permissions.	az104 identities-governance rbac roles
+What is scope in Azure RBAC?	The level where access applies, such as management group, subscription, resource group, or resource.	az104 identities-governance rbac scope
+What is the Azure RBAC scope inheritance order?	Management group, subscription, resource group, resource.	az104 identities-governance rbac scope
+Which Azure RBAC role has full access and can delegate access?	Owner.	az104 identities-governance rbac roles
+Which Azure RBAC role can create and manage resources but cannot grant access to others?	Contributor.	az104 identities-governance rbac roles
+Which Azure RBAC role can view existing resources?	Reader.	az104 identities-governance rbac roles
+Which Azure RBAC role manages user access to Azure resources?	User Access Administrator.	az104 identities-governance rbac roles
+What Azure RBAC role should you assign to manage only virtual machines in a resource group?	Virtual Machine Contributor at the resource group scope.	az104 identities-governance rbac least-privilege
+What does it mean that Azure RBAC is an allow model?	Role assignments grant permissions, and multiple assignments are additive.	az104 identities-governance rbac
+Are Azure RBAC `NotActions` explicit deny rules?	No. `NotActions` subtract permissions from the role's `Actions`; they are not deny assignments.	az104 identities-governance rbac exam-trap
+Where do you check a user's Azure RBAC access in the portal?	At the target scope, open `Access control (IAM)` and use `Check access`.	az104 identities-governance rbac portal
+Where can you view current role assignments for a resource group?	Resource group > `Access control (IAM)` > `Role assignments`.	az104 identities-governance rbac portal
+What permission do you need to create Azure RBAC role assignments?	A role such as `Owner` or `User Access Administrator`.	az104 identities-governance rbac roles
+How do you remove Azure RBAC access?	Delete the role assignment or remove the user from the group that has the role assignment.	az104 identities-governance rbac
+Where are Azure RBAC changes recorded?	Azure Activity Log.	az104 identities-governance rbac activity-log
+Which Activity Log operations should you filter for role assignment audit reports?	`Create role assignment (roleAssignments)` and `Delete role assignment (roleAssignments)`.	az104 identities-governance rbac activity-log
+Which Activity Log operations should you filter for custom role audit reports?	`Create or update custom role definition (roleDefinitions)` and `Delete custom role definition (roleDefinitions)`.	az104 identities-governance rbac activity-log
+What should you use when Azure built-in roles do not meet exact permission requirements?	A custom Azure RBAC role.	az104 identities-governance rbac custom-roles
+What is Microsoft Entra self-service password reset?	A feature that lets users reset forgotten or expired passwords without help-desk intervention.	az104 identities-governance sspr
+What are the three SSPR enablement options?	`None`, `Selected`, and `All`.	az104 identities-governance sspr
+What does SSPR option `Selected` mean?	Only members of a selected security group can use SSPR.	az104 identities-governance sspr rollout
+What does SSPR option `All` mean?	All users in the Microsoft Entra organization can use SSPR.	az104 identities-governance sspr rollout
+What is the default SSPR enablement setting?	`None`.	az104 identities-governance sspr
+When is a user considered registered for SSPR?	When they have registered at least the number of authentication methods required by the SSPR policy.	az104 identities-governance sspr registration
+What are common SSPR authentication methods?	Authenticator notification, Authenticator code, email, mobile phone, office phone, and security questions.	az104 identities-governance sspr authentication
+What SSPR authentication method is least recommended?	Security questions, because answers might be known or guessed.	az104 identities-governance sspr exam-trap
+Why is SMS not the preferred primary SSPR method?	Fraudulent SMS messages and SMS-based attacks are possible.	az104 identities-governance sspr authentication
+What SSPR requirement always applies to administrator accounts?	A strong two-method authentication policy.	az104 identities-governance sspr admins
+Can administrator accounts use security questions for SSPR?	No. Security questions are not available for accounts associated with administrator roles.	az104 identities-governance sspr admins exam-trap
+What role is required to configure SSPR?	Authentication Policy Administrator.	az104 identities-governance sspr roles
+What Microsoft Entra portal area configures SSPR?	`Microsoft Entra ID` > `Password reset`.	az104 identities-governance sspr portal
+What SSPR portal is used for registering authentication information?	`https://aka.ms/ssprsetup`.	az104 identities-governance sspr portal
+What SSPR portal is used to reset a password?	`https://aka.ms/sspr`.	az104 identities-governance sspr portal
+What is password writeback?	Writing cloud password changes back to on-premises Active Directory in hybrid environments.	az104 identities-governance sspr hybrid
+Which tools can deploy SSPR with password writeback?	Microsoft Entra Connect or cloud sync.	az104 identities-governance sspr hybrid
+Why might cloud sync improve SSPR password writeback availability?	It does not rely on a single Microsoft Entra Connect instance.	az104 identities-governance sspr hybrid
+What SSPR notification alerts a user after their password is reset?	`Notify users on password resets`.	az104 identities-governance sspr notifications
+What SSPR notification alerts admins when another admin resets their password?	`Notify all admins when other admins reset their password`.	az104 identities-governance sspr notifications
+What feature reassures users that the Microsoft sign-in page is legitimate for their organization?	Microsoft Entra company branding.	az104 identities-governance sspr branding
+What are the exercise requirements for the SSPR background image?	PNG or JPG, 1920 x 1080 pixels, and smaller than 300 KB.	az104 identities-governance sspr branding
+What are the exercise requirements for the company logo/favicon image?	PNG or JPG, 32 x 32 pixels, and smaller than 5 KB.	az104 identities-governance sspr branding
