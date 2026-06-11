@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 3 Review — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-3-quiz.html" class="btn btn-secondary btn-sm">Take Quiz</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 3: Manage Virtual Networks</h1>
+    <p class="subtitle">VNets · NSGs · DNS · Peering · Routes · Load Balancer · App Gateway · Network Watcher &nbsp;|&nbsp; <strong>15–20% of exam</strong></p>
+    <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <button class="btn btn-success btn-sm" onclick="markReviewed()">✓ Mark as Reviewed</button>
+      <a href="module-3-quiz.html" class="btn btn-primary btn-sm">Take Quiz →</a>
+    </div>
+  </div>
+
+  <div class="review-layout">
+    <aside class="review-sidebar">
+      <div class="review-sidebar-header">Contents</div>
+      <nav>
+        <a href="#vnets">3.1 Virtual Networks</a>
+        <a href="#nsgs">3.2 NSGs</a>
+        <a href="#dns">3.3 Azure DNS</a>
+        <a href="#peering">3.4 VNet Peering</a>
+        <a href="#routes">3.5 Routes &amp; UDR</a>
+        <a href="#lb">3.6 Load Balancer</a>
+        <a href="#appgw">3.7 Application Gateway</a>
+        <a href="#watcher">3.8 Network Watcher</a>
+      </nav>
+    </aside>
+
+    <div class="review-content">
+
+      <!-- 3.1 Virtual Networks -->
+      <div class="submodule-section" id="vnets">
+        <div class="submodule-header"><h2>3.1 — Configure Virtual Networks</h2></div>
+        <div class="submodule-body">
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Describe Azure virtual network features and components</li>
+            <li>Identify features and usage cases for subnets and subnetting</li>
+            <li>Identify usage cases for private and public IP addresses</li>
+            <li>Create a virtual network and assign an IP address</li>
+          </ul>
+
+          <h3>What is an Azure Virtual Network?</h3>
+          <p>A <strong>logical isolation of Azure cloud resources</strong>. Each VNet has its own CIDR block and can be linked to other VNets and on-premises networks (when CIDR blocks don't overlap).</p>
+          <div class="key-points">
+            <h4>Key Characteristics</h4>
+            <ul>
+              <li>You control DNS server settings and subnet segmentation</li>
+              <li>Can be used for VPNs, hybrid connections, and dedicated private cloud networks</li>
+              <li>Resources in different VNets cannot communicate by default — must use peering or VPN</li>
+              <li>Subnet ranges within a VNet <strong>cannot overlap</strong> each other</li>
+            </ul>
+          </div>
+
+          <h3>Subnets</h3>
+          <p>Subdivide a VNet's address space for better security and performance. Azure reserves the first 4 and last 1 IP addresses in each subnet for internal use.</p>
+          <ul>
+            <li>Use subnets to segment and isolate workloads (e.g., web tier vs. data tier)</li>
+            <li>Network Security Groups and route tables can be applied at the subnet level</li>
+          </ul>
+
+          <h3>IP Addresses</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.5rem;">
+            <div class="key-points">
+              <h4>Public IP</h4>
+              <ul>
+                <li>For internet-facing resources and connecting to Azure public-facing services</li>
+                <li><strong>Dynamic</strong> — can change when VM is stopped/deallocated (common source of connectivity issues after restart)</li>
+                <li><strong>Static</strong> — required for DNS servers, VPN gateways, app gateways, etc.</li>
+              </ul>
+            </div>
+            <div class="key-points">
+              <h4>Private IP</h4>
+              <ul>
+                <li>For internal communication; not exposed to internet</li>
+                <li>Use when a VM needs to communicate with on-premises without internet exposure</li>
+                <li>Assigned from VNet address space</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Use Static IPs When:</h3>
+          <ul>
+            <li>Setting up DNS servers</li>
+            <li>VPN gateways and Azure Application Gateways</li>
+            <li>Resources that require a consistent IP for firewall rules or DNS resolution</li>
+          </ul>
+
+          <h3>Connecting VNets to On-Premises</h3>
+          <ul>
+            <li><strong>Site-to-Site VPN</strong> — encrypted connection over the internet between on-premises and Azure VNet</li>
+            <li>Address spaces must not overlap between on-premises and Azure VNet</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3.2 NSGs -->
+      <div class="submodule-section" id="nsgs">
+        <div class="submodule-header"><h2>3.2 — Configure Network Security Groups</h2></div>
+        <div class="submodule-body">
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Determine when to use network security groups</li>
+            <li>Create network security groups</li>
+            <li>Implement and evaluate network security group rules</li>
+            <li>Describe the function of application security groups</li>
+          </ul>
+
+          <h3>What is an NSG?</h3>
+          <p>A list of <strong>security rules</strong> that allow or deny inbound or outbound network traffic to/from Azure resources. Can be associated with a <strong>subnet</strong> or a <strong>network interface</strong> (NIC).</p>
+
+          <h3>NSG Rules</h3>
+          <div class="key-points">
+            <ul>
+              <li>Each rule has: <em>priority</em>, source/destination (IP, CIDR, service tag, ASG), protocol (TCP/UDP/Any), port range, and action (Allow/Deny)</li>
+              <li><strong>Lower priority number = higher precedence</strong> (rule 100 is processed before rule 200)</li>
+              <li>A new rule with a higher priority value (e.g., 500) is processed AFTER rules with lower values (e.g., 100)</li>
+              <li>Default rules exist at priority 65000–65500 (allow VNet/Azure LB traffic, deny all inbound/outbound)</li>
+            </ul>
+          </div>
+
+          <h3>Effective Security Rules</h3>
+          <p>Azure aggregates rules from the subnet NSG and the NIC NSG. Use the <strong>Effective security rules</strong> view (Network Watcher) to see the combined rules that apply to a NIC.</p>
+
+          <h3>Application Security Groups (ASGs)</h3>
+          <p>Logical groupings of VMs by application role (e.g., "WebServers", "DBServers"). Instead of specifying IPs in NSG rules, you reference ASG names — this makes rules maintainable as IP addresses change.</p>
+          <div class="key-points">
+            <h4>Key Benefits</h4>
+            <ul>
+              <li>Define network security based on <strong>application logic</strong> rather than IP addresses</li>
+              <li>Simplify security rule management for workloads with minimal complexity</li>
+              <li>Group VMs by function; apply rules to the group</li>
+            </ul>
+          </div>
+
+          <h3>DMZ Pattern</h3>
+          <p>A <strong>demilitarized zone (DMZ)</strong> acts as a buffer between internal resources and external traffic — use NSG rules to restrict what can pass through.</p>
+
+          <h3>Use NSGs When:</h3>
+          <p>You need to restrict traffic flow to resources in a virtual network based on specific security rules. Recommended for securing VMs and Azure service networking.</p>
+        </div>
+      </div>
+
+      <!-- 3.3 Azure DNS -->
+      <div class="submodule-section" id="dns">
+        <div class="submodule-header"><h2>3.3 — Host a Domain with Azure DNS</h2></div>
+        <div class="submodule-body">
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Configure Azure DNS to host your domain</li>
+          </ul>
+
+          <h3>What is Azure DNS?</h3>
+          <p>Azure DNS lets you host your DNS zones on Azure infrastructure using the same credentials, APIs, tools, and billing as other Azure services. Azure DNS is a <strong>hosting service</strong> for DNS domains — it resolves domain names to IP addresses.</p>
+
+          <div class="key-points">
+            <h4>Key Facts</h4>
+            <ul>
+              <li>You <strong>cannot register domain names</strong> with Azure DNS — use a third-party domain registrar, then delegate to Azure DNS</li>
+              <li>Delegation: update registrar's name server records to point to Azure DNS name servers</li>
+              <li>Supports <strong>private DNS zones</strong> for name resolution within virtual networks</li>
+              <li>Supports alias records (<strong>ALIAS / CNAME at zone apex</strong>) to point to Azure public IP addresses, Traffic Manager profiles, or CDN endpoints</li>
+              <li>Highly available — backed by anycast routing to nearest name server cluster</li>
+            </ul>
+          </div>
+
+          <h3>Common DNS Record Types</h3>
+          <ul>
+            <li><strong>A</strong> — maps hostname to IPv4 address</li>
+            <li><strong>AAAA</strong> — maps hostname to IPv6 address</li>
+            <li><strong>CNAME</strong> — alias for another hostname; cannot be used at zone apex</li>
+            <li><strong>MX</strong> — mail exchange records</li>
+            <li><strong>NS</strong> — name server records (used for delegation)</li>
+            <li><strong>TXT</strong> — text records (used for domain verification, SPF)</li>
+            <li><strong>Alias record (ALIAS)</strong> — Azure-specific; can point zone apex to Azure resources</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3.4 VNet Peering -->
+      <div class="submodule-section" id="peering">
+        <div class="submodule-header"><h2>3.4 — Configure VNet Peering</h2></div>
+        <div class="submodule-body">
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Identify usage cases and product features of Azure VNet peering</li>
+            <li>Configure VPN Gateway for transit connectivity</li>
+            <li>Extend peering using hub-and-spoke with UDRs and service chaining</li>
+          </ul>
+
+          <h3>What is VNet Peering?</h3>
+          <p>Connects two Azure virtual networks so resources in both can communicate. Traffic between peered VNets is kept on the <strong>Microsoft backbone network</strong> (not the public internet). Can connect VNets in the same or different regions.</p>
+
+          <div class="key-points">
+            <h4>Peering Status</h4>
+            <ul>
+              <li>When successfully peered, the status for both VNets shows <strong>"Connected"</strong></li>
+              <li>Peering is <strong>non-transitive</strong> — if A↔B and B↔C, A cannot reach C unless A↔C is also peered</li>
+              <li>Address spaces of peered VNets must not overlap</li>
+            </ul>
+          </div>
+
+          <h3>Gateway Transit</h3>
+          <p>Allows a peered VNet to use the <strong>VPN Gateway</strong> of the hub VNet to connect to on-premises or other remote networks. The spoke VNet enables "Use remote gateways"; the hub VNet enables "Allow gateway transit".</p>
+
+          <h3>Hub-and-Spoke Topology</h3>
+          <p>Hub VNet contains shared services (gateway, firewall, DNS). Spoke VNets peer to the hub. <strong>User-Defined Routes (UDRs)</strong> and <strong>service chaining</strong> route traffic through hub appliances.</p>
+        </div>
+      </div>
+
+      <!-- 3.5 Routes -->
+      <div class="submodule-section" id="routes">
+        <div class="submodule-header"><h2>3.5 — Control Network Traffic Flow with Routes</h2></div>
+        <div class="submodule-body">
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Identify the routing capabilities of an Azure virtual network</li>
+            <li>Configure routing within a virtual network</li>
+            <li>Deploy a basic network virtual appliance</li>
+            <li>Configure routing to send traffic through a network virtual appliance</li>
+          </ul>
+
+          <h3>Azure Route Types</h3>
+          <ul>
+            <li><strong>System routes</strong> — automatically created by Azure; handle traffic within VNets, to the internet, and between peered VNets. Cannot be deleted but can be overridden.</li>
+            <li><strong>User-Defined Routes (UDRs)</strong> — custom routes in a <strong>route table</strong> that you create and associate with subnets. Used to override system routes or force traffic through a network virtual appliance (NVA).</li>
+            <li><strong>BGP routes</strong> — propagated from on-premises networks via VPN Gateway or ExpressRoute</li>
+          </ul>
+
+          <h3>Network Virtual Appliances (NVAs)</h3>
+          <p>A VM that performs network functions (firewall, WAF, routing). Traffic is redirected through an NVA using UDRs so it can be inspected before being allowed through.</p>
+          <div class="key-points">
+            <ul>
+              <li>Next hop type in a UDR can be: Virtual appliance, Virtual network gateway, VNet, Internet, None (drop)</li>
+              <li>Enable IP forwarding on the NVA's NIC so it can route packets</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3.6 Load Balancer -->
+      <div class="submodule-section" id="lb">
+        <div class="submodule-header"><h2>3.6 — Intro to Azure Load Balancer</h2></div>
+        <div class="submodule-body">
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Learn what Azure Load Balancer is and the functionality it provides</li>
+            <li>Determine whether Load Balancer meets the needs of your organization</li>
+          </ul>
+
+          <h3>What is Azure Load Balancer?</h3>
+          <p>Distributes inbound TCP/UDP network traffic across a group of Azure VMs or VM Scale Set instances. Operates at <strong>OSI Layer 4</strong> (Transport layer). Supports <strong>millions of TCP and UDP flows</strong>.</p>
+
+          <h3>Public vs Internal Load Balancers</h3>
+          <ul>
+            <li><strong>Public Load Balancer</strong> — maps public IP/port to private IP/port of backend VMs; load balances internet traffic; also provides outbound connections for backend VMs</li>
+            <li><strong>Internal (Private) Load Balancer</strong> — front-end never exposed to internet; used for internal LOB apps, multi-tier backends, cross-premises VPN traffic</li>
+          </ul>
+
+          <h3>Key Components</h3>
+          <div class="key-points">
+            <ul>
+              <li><strong>Health probes</strong> — ensure traffic isn't sent to unhealthy backend instances (e.g., probe TCP port 443 for HTTPS)</li>
+              <li><strong>Load-balancing rules</strong> — define how traffic is distributed across the backend pool</li>
+              <li><strong>Session persistence (sticky sessions)</strong> — ensures all requests from the same client go to the same backend server; required when a rule has a source IP/port hash applied</li>
+              <li><strong>Inbound NAT rules</strong> — allow RDP/SSH to individual backend VMs through the load balancer's public IP using different ports</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3.7 Application Gateway -->
+      <div class="submodule-section" id="appgw">
+        <div class="submodule-header"><h2>3.7 — Intro to Azure Application Gateway</h2></div>
+        <div class="submodule-body">
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Learn what Azure Application Gateway is and the functionality it provides</li>
+            <li>Determine whether Application Gateway meets the needs of your organization</li>
+          </ul>
+
+          <h3>What is Azure Application Gateway?</h3>
+          <p>A web traffic load balancer operating at <strong>OSI Layer 7</strong> (Application layer). Routes HTTP/HTTPS traffic based on URL, hostname, or path. Includes a built-in <strong>Web Application Firewall (WAF)</strong>.</p>
+
+          <h3>Key Features</h3>
+          <div class="key-points">
+            <ul>
+              <li><strong>Web Application Firewall (WAF)</strong> — protects against SQL injection, XSS, and other OWASP vulnerabilities</li>
+              <li><strong>TLS/SSL termination</strong> — decrypts traffic at the gateway to reduce CPU load on backend servers; can re-encrypt to backend (end-to-end encryption)</li>
+              <li><strong>Session affinity (stickiness)</strong> — routes a client's requests to the same backend server (important for e-commerce sessions)</li>
+              <li><strong>Health probes</strong> — stops forwarding to unresponsive backend servers automatically</li>
+              <li><strong>Connection draining</strong> — allows existing connections to complete naturally before removing a backend member (for planned maintenance)</li>
+              <li><strong>Autoscaling</strong> — dynamically adjusts capacity based on traffic load</li>
+              <li>Supports HTTP, HTTPS, HTTP/2, and WebSocket</li>
+            </ul>
+          </div>
+
+          <h3>App Gateway vs Load Balancer</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.88rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Feature</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Load Balancer</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Application Gateway</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">OSI Layer</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Layer 4 (TCP/UDP)</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Layer 7 (HTTP/HTTPS)</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">WAF</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">No</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Yes</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">SSL termination</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">No</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Yes</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">URL-based routing</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">No</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Yes</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Backend pool</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">VMs, VMSS</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">VMs, VMSS, App Service, on-prem</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3.8 Network Watcher -->
+      <div class="submodule-section" id="watcher">
+        <div class="submodule-header"><h2>3.8 — Intro to Azure Network Watcher</h2></div>
+        <div class="submodule-body">
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Learn what Azure Network Watcher is and the functionality it provides</li>
+            <li>Determine whether Network Watcher meets the needs of your organization</li>
+          </ul>
+
+          <h3>What is Azure Network Watcher?</h3>
+          <p>A suite of tools to <strong>monitor, diagnose, and log</strong> for Azure IaaS resources. It is <strong>not designed for PaaS or Web analytics</strong>.</p>
+
+          <h3>Tool Categories</h3>
+          <div class="key-points">
+            <h4>Monitoring</h4>
+            <ul>
+              <li><strong>Topology</strong> — visual map of all resources and their relationships across subscriptions/resource groups; useful for understanding a complex network at the start of troubleshooting</li>
+              <li><strong>Connection monitor</strong> — continuous end-to-end connectivity monitoring between endpoints; monitors over time (unlike Connection troubleshoot which is point-in-time)</li>
+            </ul>
+          </div>
+          <div class="key-points">
+            <h4>Network Diagnostic Tools</h4>
+            <ul>
+              <li><strong>IP flow verify</strong> — checks if a specific packet (src/dst IP, port, protocol, direction) is allowed or denied by NSG rules; identifies which rule is responsible</li>
+              <li><strong>NSG diagnostics</strong> — like IP flow verify but works at VM, VMSS, or Application Gateway level; can suggest new rules</li>
+              <li><strong>Next hop</strong> — detects routing issues; shows next hop type, IP, and route table ID for a destination</li>
+              <li><strong>Effective security rules</strong> — shows combined NSG rules from subnet + NIC</li>
+              <li><strong>Connection troubleshoot</strong> — tests connectivity at a point in time (compare to Connection monitor which is continuous)</li>
+              <li><strong>Packet capture</strong> — remotely capture all network traffic to/from a VM</li>
+              <li><strong>VPN troubleshoot</strong> — diagnoses virtual network gateway connections; returns health diagnosis</li>
+            </ul>
+          </div>
+          <div class="key-points">
+            <h4>Traffic</h4>
+            <ul>
+              <li><strong>Flow logs</strong> — logs Azure IP traffic info; stores in Azure Storage; works with NSGs or VNets</li>
+              <li><strong>Traffic analytics</strong> — rich visualizations of flow logs data</li>
+            </ul>
+          </div>
+
+          <h3>When NOT to Use Network Watcher</h3>
+          <ul>
+            <li>Diagnosing <strong>PaaS services</strong> — check Azure status/Service Health dashboard instead</li>
+            <li>Advanced diagnostics requiring third-party tools</li>
+            <li>Web analytics</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function markReviewed() {
+  localStorage.setItem('az104_reviewed_module_3', '1');
+  const btn = event.target;
+  btn.textContent = '✓ Reviewed!';
+  btn.classList.remove('btn-success');
+  btn.classList.add('btn-secondary');
+  btn.disabled = true;
+}
+const sections = document.querySelectorAll('.submodule-section');
+const navLinks = document.querySelectorAll('.review-sidebar nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('current', a.getAttribute('href') === '#' + current); });
+});
+</script>
+</body>
+</html>

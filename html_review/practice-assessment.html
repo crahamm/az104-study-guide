@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Assessment — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .breakdown-table { width:100%; border-collapse:collapse; font-size:0.88rem; margin:1rem 0; }
+    .breakdown-table th { text-align:left; padding:0.5rem 0.75rem; background:var(--azure-blue-lighter); border:1px solid var(--azure-blue-light); font-weight:600; }
+    .breakdown-table td { padding:0.45rem 0.75rem; border:1px solid var(--neutral-light); }
+    .breakdown-table tr:nth-child(even) td { background:var(--neutral-lighter); }
+    .breakdown-table .m-pass { color:var(--success); font-weight:600; }
+    .breakdown-table .m-fail { color:var(--error); font-weight:600; }
+    .domain-bar { height:8px; background:var(--neutral-light); border-radius:4px; margin-top:0.3rem; overflow:hidden; }
+    .domain-bar-fill { height:100%; border-radius:4px; transition:width 0.5s ease; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="../index.html#" class="btn btn-secondary btn-sm" onclick="window.location='../index.html'">All Modules</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>AZ-104 Practice Assessment</h1>
+    <p class="subtitle">45 questions across all exam domains &nbsp;·&nbsp; Pass threshold: <strong>70%</strong> &nbsp;·&nbsp; Questions shuffle on each attempt</p>
+  </div>
+
+  <!-- Score Panel -->
+  <div class="score-panel" id="score-panel">
+    <div class="score-number" id="score-pct"></div>
+    <div class="score-label" id="score-label"></div>
+    <div class="score-bar-track" style="max-width:500px;"><div class="score-bar-fill" id="score-bar"></div></div>
+
+    <!-- Per-module breakdown -->
+    <div style="max-width:600px; margin:1.5rem auto 0; text-align:left;">
+      <h3 style="font-size:0.95rem; margin-bottom:0.5rem; color:var(--neutral-secondary); text-transform:uppercase; letter-spacing:0.04em;">Domain Breakdown</h3>
+      <table class="breakdown-table" id="breakdown-table">
+        <thead><tr><th>Module</th><th>Domain</th><th>Score</th><th></th></tr></thead>
+        <tbody id="breakdown-body"></tbody>
+      </table>
+      <p style="font-size:0.82rem; color:var(--neutral-secondary); margin-top:0.5rem;">Use this breakdown to identify modules to revisit before the exam.</p>
+    </div>
+
+    <div class="score-actions">
+      <button class="btn btn-secondary" onclick="retakeAssessment()">Retake Assessment</button>
+      <button class="btn btn-success" id="btn-complete" onclick="markComplete()" disabled>Mark as Exam Ready</button>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="quiz-controls">
+    <div class="quiz-meta">
+      <span>Questions: <strong>45</strong></span>
+      <span>Domains: <strong>6</strong></span>
+      <span>Pass threshold: <strong>70%</strong></span>
+    </div>
+    <button class="btn btn-primary" onclick="submitAssessment()" id="btn-submit">Submit Assessment</button>
+    <button class="btn btn-secondary" onclick="retakeAssessment()">Shuffle &amp; Restart</button>
+  </div>
+
+  <!-- Questions -->
+  <div id="quiz-container"></div>
+
+</div>
+
+<script>
+// ─── Question Bank ─────────────────────────────────────────────────────────
+// 4 from M1, 10 from M2, 8 from M3, 8 from M4, 10 from M5, 5 from M6 = 45
+
+const BANK = [
+  // ── Module 1: Administrator Prerequisites (4) ─────────────────────────
+  { m:1, label:"Module 1", domain:"Administrator Prerequisites",
+    q:"Which of these methods can you use to access Azure Cloud Shell from any browser-based device?",
+    options:["Use a web browser to log into an Azure Subscription via the Azure portal","Install the Azure CLI on the device","Use Remote Desktop to connect to an Azure VM running Cloud Shell","Download the Cloud Shell desktop app"],
+    answer:0 },
+  { m:1, label:"Module 1", domain:"Administrator Prerequisites",
+    q:"Azure Cloud Shell sessions terminate after how many minutes of inactivity?",
+    options:["20 minutes","5 minutes","60 minutes","30 minutes"],
+    answer:0 },
+  { m:1, label:"Module 1", domain:"Administrator Prerequisites",
+    q:"What is an Azure Resource Manager (ARM) template?",
+    options:["A JSON file that defines the infrastructure and configuration for your deployment using declarative syntax","A PowerShell script that creates Azure resources imperatively","A YAML manifest for containerized Azure workloads","A graphical diagram exported from the Azure portal"],
+    answer:0 },
+  { m:1, label:"Module 1", domain:"Administrator Prerequisites",
+    q:"ARM templates are idempotent. What does this mean in practice?",
+    options:["Deploying the same template twice with no changes results in no changes to the deployed resources","The template must be re-uploaded to Azure each time it is deployed","Only new resources are created — existing resources are always deleted first","The template validates only at runtime, not before deployment"],
+    answer:0 },
+
+  // ── Module 2: Identities & Governance (10) ───────────────────────────
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"Which authentication protocol does Microsoft Entra ID use for authorization (not authentication)?",
+    options:["OAuth","Kerberos","LDAP","NTLM"],
+    answer:0 },
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"Which Microsoft Entra ID P2-exclusive feature lets you configure permanent and temporary administrators with policy-driven approval workflows for privileged access?",
+    options:["Privileged Identity Management (PIM)","Conditional Access","Identity Protection","Microsoft Entra Connect Health"],
+    answer:0 },
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"Which type of Microsoft Entra ID group should you create to manage collaboration features such as a shared mailbox, calendar, and files?",
+    options:["Microsoft 365 group","Security group","Dynamic device group","Administrative unit"],
+    answer:0 },
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"Dynamic group membership in Microsoft Entra ID requires which minimum license?",
+    options:["Microsoft Entra ID P1","Microsoft Entra ID Free","Microsoft Entra ID P2","Microsoft 365 F1"],
+    answer:0 },
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"How many resource groups can a single Azure resource belong to at the same time?",
+    options:["One","Two","Unlimited","Depends on the resource type"],
+    answer:0 },
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"Azure Policy compliance scans for existing resources run automatically how often?",
+    options:["Every 24 hours","Every 1 hour","Every 7 days","Every 30 minutes"],
+    answer:0 },
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"In the Azure Resource Manager request pipeline, which check occurs BEFORE Azure Policy evaluation?",
+    options:["RBAC (Role-Based Access Control)","Azure Defender threat detection","Azure Monitor alerting","Network security group rules"],
+    answer:0 },
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"Which built-in RBAC role can create and manage all Azure resource types but CANNOT grant access to others?",
+    options:["Contributor","Owner","Reader","User Access Administrator"],
+    answer:0 },
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"SSPR password writeback to on-premises Active Directory requires which minimum license?",
+    options:["Microsoft Entra ID P1","Microsoft Entra ID Free","No license required","Microsoft Entra ID P2 only"],
+    answer:0 },
+  { m:2, label:"Module 2", domain:"Identities & Governance",
+    q:"An administrator needs to review role assignments from the past week. Where in the Azure portal should they look?",
+    options:["Search for Activity log and filter on Create role assignment (roleAssignments) operation","Navigate to Subscriptions > Access control (IAM) > Download","Open Microsoft Entra ID > Audit Logs","Go to Cost Management + Billing"],
+    answer:0 },
+
+  // ── Module 3: Virtual Networks (8) ───────────────────────────────────
+  { m:3, label:"Module 3", domain:"Virtual Networks",
+    q:"What must be ensured when creating multiple subnets within a virtual network?",
+    options:["Subnet IP address ranges must not overlap with each other within the same VNet","Each subnet must be in a different availability zone","Subnets must be created before the VNet address space is defined","Each subnet must have a dedicated NSG"],
+    answer:0 },
+  { m:3, label:"Module 3", domain:"Virtual Networks",
+    q:"Which IP address type is required when configuring a DNS server on an Azure VM so the address does not change after a restart?",
+    options:["Static public IP address","Dynamic public IP address","Private IP address (DHCP)","Elastic IP address"],
+    answer:0 },
+  { m:3, label:"Module 3", domain:"Virtual Networks",
+    q:"What is a key benefit of using Application Security Groups in Azure?",
+    options:["They allow you to define network security rules based on application logic rather than IP addresses","They provide Layer 7 load balancing for web applications","They automatically generate NSG rules based on traffic patterns","They replace NSGs for all scenarios"],
+    answer:0 },
+  { m:3, label:"Module 3", domain:"Virtual Networks",
+    q:"How is Azure Virtual Network peering best described?",
+    options:["Traffic between peered VNets stays on the Microsoft backbone network — never traverses the public internet","Traffic is encrypted and routed over the public internet","Peered VNets share a single address space","Peering requires a VPN gateway in each VNet"],
+    answer:0 },
+  { m:3, label:"Module 3", domain:"Virtual Networks",
+    q:"Which Azure Load Balancer component stops traffic from being sent to backend instances that are no longer responding on a given port?",
+    options:["Health probe","Session persistence","Inbound NAT rule","Backend pool"],
+    answer:0 },
+  { m:3, label:"Module 3", domain:"Virtual Networks",
+    q:"Azure Application Gateway operates at which OSI layer?",
+    options:["Layer 7 (Application)","Layer 4 (Transport)","Layer 3 (Network)","Layer 2 (Data Link)"],
+    answer:0 },
+  { m:3, label:"Module 3", domain:"Virtual Networks",
+    q:"Which Azure Application Gateway feature stops forwarding new requests to a backend server while allowing existing connections to complete before maintenance?",
+    options:["Connection draining","Session affinity","Health probes","Autoscaling"],
+    answer:0 },
+  { m:3, label:"Module 3", domain:"Virtual Networks",
+    q:"Which Network Watcher tool lets you check whether a specific packet (defined by source IP, destination IP, port, and protocol) is allowed or denied by NSG rules?",
+    options:["IP flow verify","Effective security rules","Next hop","Topology"],
+    answer:0 },
+
+  // ── Module 4: Storage (8) ─────────────────────────────────────────────
+  { m:4, label:"Module 4", domain:"Storage",
+    q:"Which Azure Storage replication option allows you to read data from the secondary region at any time, even without a failover?",
+    options:["Read-access geo-redundant storage (RA-GRS)","Geo-redundant storage (GRS)","Zone-redundant storage (ZRS)","Locally redundant storage (LRS)"],
+    answer:0 },
+  { m:4, label:"Module 4", domain:"Storage",
+    q:"Which storage account type uses SSDs and is designed for applications with high transaction rates needing low latency for block blobs?",
+    options:["Premium block blobs","Standard GPv2","Premium page blobs","Premium file shares"],
+    answer:0 },
+  { m:4, label:"Module 4", domain:"Storage",
+    q:"What is the minimum storage duration for data in the Azure Blob Archive tier before early deletion charges apply?",
+    options:["180 days","30 days","90 days","365 days"],
+    answer:0 },
+  { m:4, label:"Module 4", domain:"Storage",
+    q:"Object replication between two Azure Blob Storage accounts requires which feature to be enabled?",
+    options:["Blob versioning on both source and destination accounts","Geo-redundant storage on both accounts","Soft delete on the destination account","Public access on both containers"],
+    answer:0 },
+  { m:4, label:"Module 4", domain:"Storage",
+    q:"Which type of Shared Access Signature is most secure because it is backed by Microsoft Entra ID credentials?",
+    options:["User delegation SAS","Account-level SAS","Service-level SAS","Stored access policy SAS"],
+    answer:0 },
+  { m:4, label:"Module 4", domain:"Storage",
+    q:"You want to give a client temporary read access to image assets stored in Azure Blob Storage. What is the best security option?",
+    options:["Shared Access Signature","Storage account access key","Public container access","Private endpoint"],
+    answer:0 },
+  { m:4, label:"Module 4", domain:"Storage",
+    q:"Which Azure storage solution is best suited for storing diagnostic logs and metrics that need to be shared across multiple virtual machines?",
+    options:["Azure Files","Azure Blob Storage","Azure Queue Storage","Azure Table Storage"],
+    answer:0 },
+  { m:4, label:"Module 4", domain:"Storage",
+    q:"What is the retention period range for the soft delete feature for Azure Files?",
+    options:["1 to 365 days","7 to 180 days","30 to 365 days","1 to 90 days"],
+    answer:0 },
+
+  // ── Module 5: Compute (10) ────────────────────────────────────────────
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"Azure VM compute costs are stopped when you perform which action?",
+    options:["Stop and deallocate the VM","Stop (power off) the VM without deallocating","Shut down the guest OS from within the VM","Restart the VM"],
+    answer:0 },
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"Which VM disk type cannot be used as an OS disk and is designed for extreme IOPS workloads like SAP HANA?",
+    options:["Ultra Disk","Premium SSD v2","Standard SSD","Standard HDD"],
+    answer:0 },
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"What is the purpose of fault domains in an Azure availability set?",
+    options:["VMs in different fault domains share no common power source or network switch, protecting against simultaneous hardware failure","VMs in different fault domains are rebooted at different times during planned maintenance","Fault domains determine the Azure region where VMs are deployed","Fault domains control autoscale thresholds"],
+    answer:0 },
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"Which availability option provides a 99.99% SLA by deploying VMs across physically separate datacenters within a single Azure region?",
+    options:["Availability Zones","Availability Sets","VM Scale Sets","Reserved VM Instances"],
+    answer:0 },
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"Triggering an App Service scale event at 8:00 AM on Saturday is an example of what type of autoscale rule?",
+    options:["A time-based (schedule) rule","A metric-based rule","A CPU threshold rule","A manual scaling action"],
+    answer:0 },
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"Which App Service Plan tier is required for deployment slots to be available?",
+    options:["Standard (or higher)","Basic","Free","Shared"],
+    answer:0 },
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"When you swap a staging slot with the production slot in Azure App Service, what configuration setting travels with the content by default?",
+    options:["Connection strings","App settings marked as slot-specific","Custom domain names","SSL certificates"],
+    answer:0 },
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"Which is a valid automated continuous deployment source for Azure App Service?",
+    options:["GitHub","FTP manual upload","Azure Backup","On-premises file server share"],
+    answer:0 },
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"Which statement best describes the isolation difference between containers and virtual machines?",
+    options:["Containers provide lightweight OS-level isolation; VMs provide stronger hardware-level security boundaries","Containers provide stronger isolation than VMs because they share fewer OS resources","VMs and containers provide equivalent isolation","Containers require no isolation because they run in separate subscriptions"],
+    answer:0 },
+  { m:5, label:"Module 5", domain:"Compute Resources",
+    q:"A container group in Azure Container Instances is analogous to which Kubernetes concept?",
+    options:["A pod","A node","A namespace","A deployment"],
+    answer:0 },
+
+  // ── Module 6: Monitor & Backup (5) ───────────────────────────────────
+  { m:6, label:"Module 6", domain:"Monitor & Backup",
+    q:"Which Azure Backup storage tier enables the fastest restore because the backup is available locally?",
+    options:["Snapshot tier","Vault-standard tier","Archive tier","All tiers have identical restore speed"],
+    answer:0 },
+  { m:6, label:"Module 6", domain:"Monitor & Backup",
+    q:"What is the primary difference between Azure Backup and Azure Site Recovery?",
+    options:["Azure Backup maintains point-in-time copies for recovery; Site Recovery provides near-real-time replication for regional disaster failover","Azure Backup is for on-premises workloads only; Site Recovery is for Azure VMs","Azure Backup requires dedicated infrastructure; Site Recovery is zero-infrastructure","They are the same service with different pricing models"],
+    answer:0 },
+  { m:6, label:"Module 6", domain:"Monitor & Backup",
+    q:"Azure Backup's soft delete feature retains deleted backup data for an additional how many days?",
+    options:["14 days","7 days","30 days","90 days"],
+    answer:0 },
+  { m:6, label:"Module 6", domain:"Monitor & Backup",
+    q:"What are the two main types of monitoring data Azure Monitor collects for Azure VMs?",
+    options:["Metrics and logs","Snapshots and logs","Performance counters and alerts","Traces and metrics"],
+    answer:0 },
+  { m:6, label:"Module 6", domain:"Monitor & Backup",
+    q:"To collect guest OS performance counters and event logs from an Azure VM (beyond automatic host metrics), what must you install and configure?",
+    options:["Azure Monitor Agent and a Data Collection Rule (DCR)","Boot diagnostics extension and a Log Analytics workspace","MARS agent and a Recovery Services vault","Azure Backup extension and diagnostic settings"],
+    answer:0 },
+];
+
+// ─── Quiz Engine ──────────────────────────────────────────────────────────
+let questions = [];
+let moduleMap = {}; // m → {total, correct, label, domain}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildAssessment() {
+  questions = shuffle(BANK);
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const opts = shuffle(q.options.map((o, idx) => ({ text: o, origIdx: idx })));
+    const correctShuffledIdx = opts.findIndex(o => o.origIdx === q.answer);
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.dataset.correct = correctShuffledIdx;
+    card.dataset.module = q.m;
+    card.innerHTML = `
+      <div class="q-header">
+        <div class="q-num">${i + 1}</div>
+        <div>
+          <div class="q-text">${q.q}</div>
+          <div class="q-source">${q.label} — ${q.domain}</div>
+        </div>
+      </div>
+      <ul class="q-options">
+        ${opts.map((o, oi) => `<li><label><input type="radio" name="q${i}" value="${oi}">${o.text}</label></li>`).join('')}
+      </ul>
+      <div class="q-explanation" id="exp-${i}"></div>
+    `;
+    container.appendChild(card);
+  });
+  document.getElementById('score-panel').classList.remove('visible');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function submitAssessment() {
+  const cards = document.querySelectorAll('.question-card');
+  let totalCorrect = 0;
+
+  // Reset module tracking
+  moduleMap = {};
+  questions.forEach(q => {
+    if (!moduleMap[q.m]) moduleMap[q.m] = { total: 0, correct: 0, label: q.label, domain: q.domain };
+    moduleMap[q.m].total++;
+  });
+
+  cards.forEach((card, i) => {
+    const correctIdx = parseInt(card.dataset.correct);
+    const mod = parseInt(card.dataset.module);
+    const selected = card.querySelector(`input[name="q${i}"]:checked`);
+    const labels = card.querySelectorAll('.q-options label');
+    const exp = document.getElementById(`exp-${i}`);
+    card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+
+    if (!selected) {
+      card.classList.add('incorrect');
+      labels[correctIdx].classList.add('correct-answer');
+      exp.textContent = `No answer selected. Correct: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible');
+      return;
+    }
+    const sel = parseInt(selected.value);
+    if (sel === correctIdx) {
+      totalCorrect++;
+      moduleMap[mod].correct++;
+      card.classList.add('correct');
+    } else {
+      card.classList.add('incorrect');
+      labels[correctIdx].classList.add('correct-answer');
+      labels[sel].classList.add('wrong-selected');
+      exp.textContent = `Correct answer: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible');
+    }
+  });
+
+  const total = questions.length;
+  const pct = Math.round((totalCorrect / total) * 100);
+  const pass = pct >= 70;
+
+  // Score panel
+  const scoreEl = document.getElementById('score-pct');
+  scoreEl.textContent = pct + '%';
+  scoreEl.className = 'score-number ' + (pass ? 'pass' : 'fail');
+  document.getElementById('score-label').textContent =
+    `${totalCorrect} of ${total} correct — ${pass ? 'Passed! You are exam ready. ✓' : 'Keep studying. Review the modules where you struggled.'}`;
+  const bar = document.getElementById('score-bar');
+  bar.style.width = pct + '%';
+  bar.className = 'score-bar-fill ' + (pass ? 'pass' : 'fail');
+  document.getElementById('btn-complete').disabled = !pass;
+
+  // Per-module breakdown
+  const tbody = document.getElementById('breakdown-body');
+  tbody.innerHTML = '';
+  const moduleOrder = [1, 2, 3, 4, 5, 6];
+  moduleOrder.forEach(m => {
+    if (!moduleMap[m]) return;
+    const { total: t, correct: c, label, domain } = moduleMap[m];
+    const mpct = Math.round((c / t) * 100);
+    const mpass = mpct >= 70;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${label}</td>
+      <td>${domain}</td>
+      <td class="${mpass ? 'm-pass' : 'm-fail'}">${c}/${t} (${mpct}%)</td>
+      <td style="min-width:80px;">
+        <div class="domain-bar">
+          <div class="domain-bar-fill ${mpass ? 'pass' : 'fail'}" style="width:${mpct}%; background:${mpass ? 'var(--success)' : 'var(--error)'};"></div>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  document.getElementById('score-panel').classList.add('visible');
+  document.getElementById('score-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('btn-submit').disabled = true;
+}
+
+function retakeAssessment() {
+  buildAssessment();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function markComplete() {
+  localStorage.setItem('az104_assessment_passed', '1');
+  const btn = document.getElementById('btn-complete');
+  btn.textContent = '✓ Marked as Exam Ready';
+  btn.disabled = true;
+}
+
+buildAssessment();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 1 Review — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-1-quiz.html" class="btn btn-secondary btn-sm">Take Quiz</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 1: Administrator Prerequisites</h1>
+    <p class="subtitle">Azure Cloud Shell · ARM Templates with VS Code</p>
+    <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <button class="btn btn-success btn-sm" onclick="markReviewed()">✓ Mark as Reviewed</button>
+      <a href="module-1-quiz.html" class="btn btn-primary btn-sm">Take Quiz →</a>
+    </div>
+  </div>
+
+  <div class="review-layout">
+
+    <!-- Sidebar Nav -->
+    <aside class="review-sidebar">
+      <div class="review-sidebar-header">Contents</div>
+      <nav>
+        <a href="#cloud-shell">1.1 Azure Cloud Shell</a>
+        <a href="#arm-templates">1.2 ARM Templates</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="review-content">
+
+      <!-- Submodule 1.1: Azure Cloud Shell -->
+      <div class="submodule-section" id="cloud-shell">
+        <div class="submodule-header">
+          <h2>1.1 — Intro to Azure Cloud Shell</h2>
+        </div>
+        <div class="submodule-body">
+
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Describe Azure Cloud Shell and the functionality it provides</li>
+            <li>Determine whether Cloud Shell meets the needs of your organization</li>
+            <li>Recognize how to use Cloud Shell and persist files for multiple sessions</li>
+          </ul>
+
+          <h3>What is Azure Cloud Shell?</h3>
+          <p>Azure Cloud Shell is a <strong>browser-accessible command-line environment</strong> for managing Azure resources. It supports both <strong>Bash</strong> and <strong>PowerShell</strong>. Because Microsoft manages Cloud Shell, you always have access to the latest versions of the Azure CLI and PowerShell modules without installing anything locally.</p>
+
+          <div class="key-points">
+            <h4>Key Facts</h4>
+            <ul>
+              <li>Accessible from any browser — no local installation required</li>
+              <li>Infrastructure is compliant with <strong>double encryption at rest</strong> by default</li>
+              <li>Sessions terminate after <strong>20 minutes of inactivity</strong> (state is lost; CloudDrive files persist)</li>
+              <li>Only one instance is allowed at a time — not suitable for concurrent multi-tenant work</li>
+            </ul>
+          </div>
+
+          <h3>How to Access Cloud Shell</h3>
+          <ul>
+            <li>Direct link: <code>shell.azure.com</code></li>
+            <li>Via the Azure portal (icon in top navigation bar)</li>
+            <li>From code snippets in Microsoft Learn</li>
+          </ul>
+
+          <h3>Persisting Files — CloudDrive</h3>
+          <p>Cloud Shell allocates a temporary VM per session. To persist files across sessions, use the <strong>Azure CloudDrive</strong> (backed by Azure File Share). Files on CloudDrive survive session termination and are accessible from any device. You can also map an Azure Storage File Share to access its contents through Cloud Shell.</p>
+          <p>Use the <strong>Cloud Shell editor</strong> (curly-brackets icon, or <code>code &lt;filename&gt;</code>) to edit files directly in CloudDrive. The <code>code</code> command requires Classic mode.</p>
+
+          <h3>Pre-installed Tools</h3>
+          <p>Cloud Shell sessions include: Azure CLI, AzCopy, Azure Functions CLI, Docker Machine, kubectl, Helm, Terraform, Ansible, git, vim, and more — no manual installation needed.</p>
+
+          <h3>When to Use (and When NOT To)</h3>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-top:0.5rem;">
+            <div class="key-points">
+              <h4>✓ Use Cloud Shell when…</h4>
+              <ul>
+                <li>Accessing from any browser-based device</li>
+                <li>No local plug-ins/add-ons available</li>
+                <li>Need to persist files across sessions</li>
+                <li>Prefer Bash or PowerShell flexibility</li>
+                <li>Editing scripts via built-in editor</li>
+              </ul>
+            </div>
+            <div class="key-points" style="border-left-color: var(--error);">
+              <h4>✗ Avoid Cloud Shell when…</h4>
+              <ul>
+                <li>Sessions longer than 20 minutes (will disconnect)</li>
+                <li>Need <code>sudo</code> / admin permissions</li>
+                <li>Need tools not supported in Cloud Shell</li>
+                <li>Storage from multiple regions is required</li>
+                <li>Multiple concurrent sessions needed</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Submodule 1.2: ARM Templates -->
+      <div class="submodule-section" id="arm-templates">
+        <div class="submodule-header">
+          <h2>1.2 — Create ARM Templates with VS Code</h2>
+        </div>
+        <div class="submodule-body">
+
+          <h3>Learning Objectives</h3>
+          <ul class="objectives-list">
+            <li>Implement a JSON ARM template using Visual Studio Code</li>
+            <li>Declare resources and add flexibility with parameters and outputs</li>
+          </ul>
+
+          <h3>What is an ARM Template?</h3>
+          <p>ARM templates are <strong>JSON files</strong> that define the infrastructure and configuration for your Azure deployment using <strong>declarative syntax</strong> — you describe <em>what</em> to deploy, not <em>how</em> to deploy it step by step. Azure Resource Manager then deploys resources in the correct order, in parallel where possible.</p>
+          <p><strong>Note:</strong> Bicep is now the recommended language for new IaC on Azure (simpler syntax than JSON ARM templates).</p>
+
+          <h3>Benefits of ARM Templates</h3>
+          <div class="key-points">
+            <ul>
+              <li><strong>Idempotent</strong> — deploy the same template multiple times; only changes are applied</li>
+              <li><strong>Consistent configurations</strong> — same template = same outcome every time</li>
+              <li><strong>Parallel resource creation</strong> — faster than scripted deployments</li>
+              <li><strong>Built-in validation</strong> — Resource Manager checks the template before deployment starts</li>
+              <li><strong>CI/CD integration</strong> — works with Azure Pipelines and GitHub Actions</li>
+              <li><strong>Deployment history</strong> — visible in the Azure portal with parameter/output values</li>
+            </ul>
+          </div>
+
+          <h3>ARM Template File Structure</h3>
+          <table style="width:100%; border-collapse:collapse; font-size:0.88rem; margin-bottom:1rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="text-align:left;padding:0.5rem;border:1px solid var(--azure-blue-light);">Element</th><th style="text-align:left;padding:0.5rem;border:1px solid var(--azure-blue-light);">Required?</th><th style="text-align:left;padding:0.5rem;border:1px solid var(--azure-blue-light);">Purpose</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);"><code>$schema</code></td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Required</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Location of JSON schema file describing template structure</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><code>contentVersion</code></td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Required</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Template version (e.g., 1.0.0.0)</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);"><code>parameters</code></td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Optional</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Values provided at deployment time; max 256</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><code>variables</code></td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Optional</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Values to simplify template expressions</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);"><code>functions</code></td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Optional</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">User-defined functions for reuse in the template</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><code>resources</code></td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Required</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">The actual resources to deploy or update</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);"><code>outputs</code></td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Optional</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Values returned after successful deployment</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><code>apiProfile</code></td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Optional</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Collection of API versions for resource types</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Parameters</h3>
+          <p>Parameters let you customize deployments for different environments. Best practices:</p>
+          <ul>
+            <li>Use parameters for environment-specific settings (SKU, size, capacity, names)</li>
+            <li><strong>Never hardcode or provide defaults for passwords/secrets</strong> — always use parameters of type <code>secureString</code> or <code>secureObject</code></li>
+            <li>Provide a description for each parameter</li>
+            <li>Use default values where appropriate</li>
+            <li>Limit 256 parameters per template</li>
+          </ul>
+          <p>Parameter types: <code>string</code>, <code>secureString</code>, <code>int</code>, <code>bool</code>, <code>object</code>, <code>secureObject</code>, <code>array</code></p>
+          <p>Reference a parameter with: <code>[parameters('parameterName')]</code></p>
+
+          <h3>Outputs</h3>
+          <p>Outputs return values after deployment (e.g., a storage account's endpoint). Use the <code>reference()</code> function to get runtime state of a deployed resource.</p>
+
+          <h3>Deploying an ARM Template</h3>
+          <p>Deploy locally using Azure CLI or Azure PowerShell:</p>
+          <ul>
+            <li><strong>Azure CLI:</strong> <code>az deployment group create --template-file azuredeploy.json --resource-group myRG</code></li>
+            <li>Use <code>az deployment group create</code> (preferred) instead of the deprecated <code>az group deployment create</code></li>
+            <li>Can pass parameter values inline: <code>--parameters storageAccountType=Standard_LRS</code></li>
+          </ul>
+          <p>Resource type syntax: <code>{resource-provider}/{resource-type}</code> (e.g., <code>Microsoft.Storage/storageAccounts</code>)</p>
+
+        </div>
+      </div>
+
+    </div><!-- /review-content -->
+  </div><!-- /review-layout -->
+
+</div><!-- /page-container -->
+
+<script>
+function markReviewed() {
+  localStorage.setItem('az104_reviewed_module_1', '1');
+  const btn = event.target;
+  btn.textContent = '✓ Reviewed!';
+  btn.classList.remove('btn-success');
+  btn.classList.add('btn-secondary');
+  btn.disabled = true;
+}
+// Highlight current sidebar link on scroll
+const sections = document.querySelectorAll('.submodule-section');
+const navLinks = document.querySelectorAll('.review-sidebar nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('current', a.getAttribute('href') === '#' + current); });
+});
+</script>
+
+</body>
+</html>

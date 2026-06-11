@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 4 Quiz — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-4-review.html" class="btn btn-secondary btn-sm">Review Notes</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 4 Quiz</h1>
+    <p class="subtitle">Manage Storage — 15–20% of exam</p>
+  </div>
+
+  <div class="score-panel" id="score-panel">
+    <div class="score-number" id="score-pct"></div>
+    <div class="score-label" id="score-label"></div>
+    <div class="score-bar-track"><div class="score-bar-fill" id="score-bar"></div></div>
+    <div class="score-actions">
+      <button class="btn btn-secondary" onclick="retakeQuiz()">Retake Quiz</button>
+      <button class="btn btn-success" id="btn-complete" onclick="markComplete()" disabled>Mark Module Complete</button>
+      <a href="module-5-quiz.html" class="btn btn-primary">Next Module →</a>
+    </div>
+  </div>
+
+  <div class="quiz-controls">
+    <div class="quiz-meta">
+      <span>Questions: <strong id="q-count"></strong></span>
+      <span>Pass threshold: <strong>70%</strong></span>
+    </div>
+    <button class="btn btn-primary" onclick="submitQuiz()" id="btn-submit">Submit Quiz</button>
+    <button class="btn btn-secondary" onclick="retakeQuiz()">Shuffle &amp; Restart</button>
+  </div>
+
+  <div id="quiz-container"></div>
+
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // From knowledge checks
+  { q: "When comparing Azure's Locally Redundant Storage (LRS) and Geo-Redundant Storage (GRS), what is the main advantage of choosing GRS?", options: ["Data is replicated to a secondary geographic region to protect against regional outages", "GRS has lower storage costs than LRS", "GRS provides zone-level redundancy within the primary region", "GRS supports read access from the secondary region at all times"], answer: 0, source: "4.1 Knowledge Check" },
+  { q: "An Azure administrator needs to secure the storage account by restricting access to specific subnets. What configuration should they apply?", options: ["Use the 'Firewalls and virtual networks' settings for the storage account", "Enable Geo-redundant storage for the account", "Apply an NSG directly to the storage account", "Enable Private DNS zone for the storage account"], answer: 0, source: "4.1 Knowledge Check" },
+  { q: "Which replication strategy would be most appropriate for data that must remain readable during a regional outage, without requiring immediate consistency?", options: ["Geo-redundant storage (GRS)", "Locally redundant storage (LRS)", "Zone-redundant storage (ZRS)", "Read-access geo-redundant storage (RA-GRS)"], answer: 3, source: "4.1 Knowledge Check" },
+  { q: "How does RA-GRS improve upon standard GRS in terms of data access?", options: ["RA-GRS allows read access to data in the secondary region, enhancing availability during primary region failures", "RA-GRS replicates data synchronously to the secondary region", "RA-GRS provides faster failover than GRS", "RA-GRS includes zone redundancy in the primary region"], answer: 0, source: "4.1 Knowledge Check" },
+  { q: "Which Azure feature assigns a private IP from your VNet to an Azure Storage account for secure connectivity?", options: ["Azure Private Endpoints", "Service Endpoints", "Azure Firewall", "VNet Peering"], answer: 0, source: "4.1 Knowledge Check" },
+  { q: "If a blob in the Cool tier has not been modified or accessed for 90 days according to a lifecycle policy, what should be the next action?", options: ["Move it to the Archive tier to further reduce storage costs", "Delete it permanently", "Move it to the Hot tier for re-evaluation", "Keep it in Cool tier — no action needed until 180 days"], answer: 0, source: "4.2 Knowledge Check" },
+  { q: "What might prevent successful object replication between two Azure Blob Storage accounts?", options: ["Blob versioning is not enabled on either the source or destination account", "The accounts are in different Azure regions", "The accounts use different redundancy types", "Object replication is only supported with Premium storage accounts"], answer: 0, source: "4.2 Knowledge Check" },
+  { q: "Which lifecycle management policy rule can be used to reduce storage costs for data that is rarely accessed after a month?", options: ["Move data to Archive tier", "Move data to Cool tier", "Enable soft delete on the container", "Enable blob versioning"], answer: 0, source: "4.2 Knowledge Check" },
+  { q: "What is the recommended way to manage and rotate Azure storage account access keys?", options: ["Use Azure Key Vault to manage and rotate your keys", "Regenerate keys manually in the Azure portal every 90 days", "Store keys in an environment variable on the application server", "Use ARM templates to automate key rotation"], answer: 0, source: "4.3 Knowledge Check" },
+  { q: "What is the recommended way to authorize access to data in Azure Storage?", options: ["Using either Microsoft Entra ID or a shared access signature (SAS)", "Using only storage account access keys", "Using public containers with no authentication", "Using IP-based firewall rules only"], answer: 0, source: "4.3 Knowledge Check" },
+  { q: "You want to give read access to image assets for a limited period of time. What security option is best?", options: ["Shared Access Signature", "Storage account access key", "Microsoft Entra role assignment", "Public container access"], answer: 0, source: "4.3 Knowledge Check" },
+  { q: "An organization needs to store diagnostic data including logs and metrics to be shared across multiple VMs. Which Azure storage solution is most suitable?", options: ["Azure Files", "Azure Blob Storage", "Azure Queue Storage", "Azure Table Storage"], answer: 0, source: "4.4 Knowledge Check" },
+  { q: "Your company wants to ensure data protection against accidental deletions in Azure file shares. Which feature should you configure?", options: ["Soft delete", "File share snapshots", "Geo-redundant replication", "Azure Backup"], answer: 0, source: "4.4 Knowledge Check" },
+  { q: "Which Azure Files feature allows you to capture a point-in-time, read-only copy of your data?", options: ["File share snapshots", "Soft delete", "Azure File Sync", "Blob versioning"], answer: 0, source: "4.4 Knowledge Check" },
+  { q: "A company wants to replace its traditional on-premises file servers with a cloud-based solution using SMB and NFS protocols. Which Azure service should they implement?", options: ["Azure Files", "Azure Blob Storage", "Azure Queue Storage", "Azure NetApp Files"], answer: 0, source: "4.4 Knowledge Check" },
+  { q: "Which feature is unique to Azure Files compared to Azure Blob Storage?", options: ["Provides true directory objects for file organization", "Supports HTTP-based REST access", "Supports lifecycle management policies", "Supports geo-redundant replication"], answer: 0, source: "4.4 Knowledge Check" },
+  // Synthesized
+  { q: "Which storage account type uses SSDs and is recommended for applications with high transaction rates and consistently low latency for block blobs?", options: ["Premium block blobs", "Standard GPv2", "Premium page blobs", "Premium file shares"], answer: 0, source: "4.1 Content" },
+  { q: "Which replication option is Microsoft's recommendation for applications that require maximum consistency, durability, high availability, and resilience for disaster recovery?", options: ["GZRS", "RA-GRS", "LRS", "ZRS"], answer: 0, source: "4.1 Content" },
+  { q: "What is the minimum storage duration for data in the Archive tier before early deletion charges apply?", options: ["180 days", "30 days", "90 days", "365 days"], answer: 0, source: "4.2 Content" },
+  { q: "How do you rehydrate a blob from the Archive tier when you need urgent access in a disaster recovery scenario?", options: ["Use High priority rehydration (within 1 hour for objects under 10 GB)", "Use Set Blob Tier with Standard priority — rehydration is always immediate", "Use the Azure portal's Emergency Restore feature", "Archive blobs cannot be rehydrated; you must use a backup copy"], answer: 0, source: "4.2 Content" },
+  { q: "Which SAS type is most secure because it is tied to Microsoft Entra ID credentials?", options: ["User delegation SAS", "Account-level SAS", "Service-level SAS", "Stored access policy SAS"], answer: 0, source: "4.3 Content" },
+  { q: "When creating a SAS token, what is the recommended practice for the start time to handle clock skew between machines?", options: ["Set the start time at least 15 minutes in the past", "Set the start time exactly to the current moment", "Set the start time 24 hours in the past", "Do not set a start time — always use only an expiry time"], answer: 0, source: "4.3 Content" },
+  { q: "What is the retention period range for soft delete for Azure Files?", options: ["1 to 365 days", "30 to 365 days", "1 to 90 days", "7 to 180 days"], answer: 0, source: "4.4 Content" },
+  { q: "Azure File share snapshots are incremental. What does this mean for storage costs?", options: ["Only changes made since the last snapshot are saved, reducing storage costs", "Each snapshot stores a full copy of the file share, increasing costs proportionally", "Snapshots compress data automatically to reduce costs", "Snapshots are only billed when they are accessed"], answer: 0, source: "4.4 Content" },
+];
+
+let questions = [];
+function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function buildQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  document.getElementById('q-count').textContent = questions.length;
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const opts = shuffle(q.options.map((o, idx) => ({ text: o, origIdx: idx })));
+    const correctShuffledIdx = opts.findIndex(o => o.origIdx === q.answer);
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.dataset.correct = correctShuffledIdx;
+    card.innerHTML = `<div class="q-header"><div class="q-num">${i+1}</div><div><div class="q-text">${q.q}</div><div class="q-source">${q.source}</div></div></div>
+      <ul class="q-options">${opts.map((o,oi)=>`<li><label><input type="radio" name="q${i}" value="${oi}">${o.text}</label></li>`).join('')}</ul>
+      <div class="q-explanation" id="exp-${i}"></div>`;
+    container.appendChild(card);
+  });
+  document.getElementById('score-panel').classList.remove('visible');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function submitQuiz() {
+  const cards = document.querySelectorAll('.question-card');
+  let correct = 0;
+  cards.forEach((card, i) => {
+    const correctIdx = parseInt(card.dataset.correct);
+    const selected = card.querySelector(`input[name="q${i}"]:checked`);
+    const labels = card.querySelectorAll('.q-options label');
+    const exp = document.getElementById(`exp-${i}`);
+    card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+    if (!selected) {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      exp.textContent = `No answer selected. Correct: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible'); return;
+    }
+    const sel = parseInt(selected.value);
+    if (sel === correctIdx) { correct++; card.classList.add('correct'); }
+    else {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      labels[sel].classList.add('wrong-selected');
+      exp.textContent = `Correct answer: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible');
+    }
+  });
+  const pct = Math.round((correct / questions.length) * 100);
+  const pass = pct >= 70;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-pct').className = 'score-number ' + (pass ? 'pass' : 'fail');
+  document.getElementById('score-label').textContent = `${correct} of ${questions.length} correct — ${pass ? 'Passed! ✓' : 'Keep studying and try again.'}`;
+  document.getElementById('score-bar').style.width = pct + '%';
+  document.getElementById('score-bar').className = 'score-bar-fill ' + (pass ? 'pass' : 'fail');
+  document.getElementById('btn-complete').disabled = !pass;
+  document.getElementById('score-panel').classList.add('visible');
+  document.getElementById('score-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('btn-submit').disabled = true;
+}
+
+function retakeQuiz() { buildQuiz(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function markComplete() { localStorage.setItem('az104_quiz_passed_module_4', '1'); document.getElementById('btn-complete').textContent = '✓ Marked Complete'; document.getElementById('btn-complete').disabled = true; }
+
+buildQuiz();
+</script>
+</body>
+</html>

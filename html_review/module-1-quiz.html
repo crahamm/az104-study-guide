@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 1 Quiz — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-1-review.html" class="btn btn-secondary btn-sm">Review Notes</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 1 Quiz</h1>
+    <p class="subtitle">Administrator Prerequisites — Azure Cloud Shell &amp; ARM Templates</p>
+  </div>
+
+  <!-- Score Panel -->
+  <div class="score-panel" id="score-panel">
+    <div class="score-number" id="score-pct"></div>
+    <div class="score-label" id="score-label"></div>
+    <div class="score-bar-track"><div class="score-bar-fill" id="score-bar"></div></div>
+    <div class="score-actions">
+      <button class="btn btn-secondary" onclick="retakeQuiz()">Retake Quiz</button>
+      <button class="btn btn-success" id="btn-complete" onclick="markComplete()" disabled>Mark Module Complete</button>
+      <a href="module-2-quiz.html" class="btn btn-primary">Next Module →</a>
+    </div>
+  </div>
+
+  <!-- Quiz Controls -->
+  <div class="quiz-controls">
+    <div class="quiz-meta">
+      <span>Questions: <strong id="q-count">15</strong></span>
+      <span>Pass threshold: <strong>70%</strong></span>
+    </div>
+    <button class="btn btn-primary" onclick="submitQuiz()" id="btn-submit">Submit Quiz</button>
+    <button class="btn btn-secondary" onclick="retakeQuiz()">Shuffle &amp; Restart</button>
+  </div>
+
+  <!-- Questions -->
+  <div id="quiz-container"></div>
+
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // === From knowledge checks ===
+  {
+    q: "Which of these methods can you use to access Azure Cloud Shell from a computer running Windows 11?",
+    options: [
+      "Use the Microsoft Edge Browser to log into an Azure Subscription",
+      "Install the Azure Cloud Shell desktop application",
+      "Use Remote Desktop Protocol (RDP) to connect to a Cloud Shell VM",
+      "Download the Cloud Shell CLI tool from the Azure portal"
+    ],
+    answer: 0,
+    source: "1.1 Knowledge Check"
+  },
+  {
+    q: "You want to store a script that you constantly use for operations on Azure resources. This script needs to be rapidly available when you open a new Azure Cloud Shell session. Which procedure should you use?",
+    options: [
+      "Upload the script to your CloudDrive on an Azure Cloud Shell session",
+      "Email the script to yourself and download it each session",
+      "Copy the script to the Cloud Shell temporary VM storage",
+      "Store the script in an Azure Key Vault"
+    ],
+    answer: 0,
+    source: "1.1 Knowledge Check"
+  },
+  {
+    q: "You have a script stored on Cloud Shell storage that you use for resource management, and you need to make small changes to it. What is the best way to handle this?",
+    options: [
+      "Use the Cloud Shell editor to make changes and save directly to CloudDrive",
+      "Download the script, edit locally in Notepad, then re-upload",
+      "Delete the script and create a new one with the changes",
+      "Use the Azure portal's resource editor to update the script"
+    ],
+    answer: 0,
+    source: "1.1 Knowledge Check"
+  },
+  {
+    q: "What is an Azure Resource Manager template?",
+    options: [
+      "A JavaScript Object Notation (JSON) file that defines the infrastructure and configuration for your deployment",
+      "A PowerShell script that creates Azure resources imperatively",
+      "A graphical diagram of Azure resource dependencies",
+      "A YAML file used to define containerized workloads"
+    ],
+    answer: 0,
+    source: "1.2 Knowledge Check"
+  },
+  {
+    q: "Which one of these is NOT an element of an Azure Resource Manager template?",
+    options: [
+      "idempotent",
+      "parameters",
+      "resources",
+      "outputs"
+    ],
+    answer: 0,
+    source: "1.2 Knowledge Check"
+  },
+  {
+    q: "Azure Resource Manager templates are idempotent. This means that if you run a template with no changes a second time:",
+    options: [
+      "Azure Resource Manager doesn't make any changes to the deployed resources",
+      "All resources are deleted and recreated from scratch",
+      "A deployment error is returned because the resources already exist",
+      "The template is ignored and the existing resources remain unchanged with no validation"
+    ],
+    answer: 0,
+    source: "1.2 Knowledge Check"
+  },
+  // === Synthesized questions ===
+  {
+    q: "An Azure Cloud Shell session has been inactive. After how many minutes will the session terminate?",
+    options: [
+      "20 minutes",
+      "5 minutes",
+      "60 minutes",
+      "30 minutes"
+    ],
+    answer: 0,
+    source: "1.1 Content"
+  },
+  {
+    q: "Which of the following is a reason you should NOT use Azure Cloud Shell?",
+    options: [
+      "You need to run a script that will take 45 minutes to complete",
+      "You want to manage Azure VMs from a friend's laptop",
+      "You prefer to use PowerShell over Bash",
+      "You don't want to install Azure CLI locally"
+    ],
+    answer: 0,
+    source: "1.1 Content"
+  },
+  {
+    q: "What happens to files stored on the Cloud Shell CloudDrive when a session times out?",
+    options: [
+      "Files on CloudDrive persist and are available in the next session",
+      "All files are deleted when the session ends",
+      "Files are archived to Azure Blob Storage automatically",
+      "Files are only accessible for 24 hours after the session ends"
+    ],
+    answer: 0,
+    source: "1.1 Content"
+  },
+  {
+    q: "In an ARM template, which section is REQUIRED to define the Azure resources that will be deployed?",
+    options: [
+      "resources",
+      "parameters",
+      "variables",
+      "outputs"
+    ],
+    answer: 0,
+    source: "1.2 Content"
+  },
+  {
+    q: "You need to deploy an ARM template to a resource group using Azure CLI. Which is the correct and current command to use?",
+    options: [
+      "az deployment group create",
+      "az group deployment create",
+      "az resource deploy",
+      "az template deploy group"
+    ],
+    answer: 0,
+    source: "1.2 Content"
+  },
+  {
+    q: "Which parameter type should you use in an ARM template for passwords and secrets?",
+    options: [
+      "secureString",
+      "string",
+      "secureObject",
+      "Both secureString and secureObject are correct depending on context"
+    ],
+    answer: 3,
+    source: "1.2 Content"
+  },
+  {
+    q: "What is the maximum number of parameters allowed in a single ARM template?",
+    options: [
+      "256",
+      "100",
+      "512",
+      "Unlimited"
+    ],
+    answer: 0,
+    source: "1.2 Content"
+  },
+  {
+    q: "Which of the following describes the declarative syntax used in ARM templates?",
+    options: [
+      "You describe what resources should look like without specifying each step to create them",
+      "You write commands that the computer executes sequentially to build resources",
+      "You define a flowchart of operations that Azure Resource Manager follows",
+      "You specify conditions and loops to create resources dynamically"
+    ],
+    answer: 0,
+    source: "1.2 Content"
+  },
+  {
+    q: "What is the correct resource type format when adding a resource to an ARM template?",
+    options: [
+      "{resource-provider}/{resource-type} (e.g., Microsoft.Storage/storageAccounts)",
+      "{resource-type}/{resource-provider} (e.g., storageAccounts/Microsoft.Storage)",
+      "{resource-name}/{resource-type} (e.g., myStorage/storageAccounts)",
+      "{subscription-id}/{resource-type}"
+    ],
+    answer: 0,
+    source: "1.2 Content"
+  }
+];
+
+let questions = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  document.getElementById('q-count').textContent = questions.length;
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const opts = shuffle(q.options.map((o, idx) => ({ text: o, origIdx: idx })));
+    const correctShuffledIdx = opts.findIndex(o => o.origIdx === q.answer);
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.dataset.correct = correctShuffledIdx;
+    card.innerHTML = `
+      <div class="q-header">
+        <div class="q-num">${i + 1}</div>
+        <div>
+          <div class="q-text">${q.q}</div>
+          <div class="q-source">${q.source}</div>
+        </div>
+      </div>
+      <ul class="q-options">
+        ${opts.map((o, oi) => `
+          <li><label>
+            <input type="radio" name="q${i}" value="${oi}">
+            ${o.text}
+          </label></li>
+        `).join('')}
+      </ul>
+      <div class="q-explanation" id="exp-${i}"></div>
+    `;
+    container.appendChild(card);
+  });
+  document.getElementById('score-panel').classList.remove('visible');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function submitQuiz() {
+  const cards = document.querySelectorAll('.question-card');
+  let correct = 0, answered = 0;
+  cards.forEach((card, i) => {
+    const correctIdx = parseInt(card.dataset.correct);
+    const selected = card.querySelector(`input[name="q${i}"]:checked`);
+    const labels = card.querySelectorAll('.q-options label');
+    const exp = document.getElementById(`exp-${i}`);
+    card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+
+    if (!selected) {
+      card.classList.add('incorrect');
+      labels[correctIdx].classList.add('correct-answer');
+      exp.textContent = `No answer selected. Correct answer: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible');
+      return;
+    }
+    answered++;
+    const sel = parseInt(selected.value);
+    if (sel === correctIdx) {
+      correct++;
+      card.classList.add('correct');
+    } else {
+      card.classList.add('incorrect');
+      labels[correctIdx].classList.add('correct-answer');
+      labels[sel].classList.add('wrong-selected');
+      exp.textContent = `Correct answer: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible');
+    }
+  });
+
+  const pct = Math.round((correct / questions.length) * 100);
+  const pass = pct >= 70;
+  const panel = document.getElementById('score-panel');
+  const scoreEl = document.getElementById('score-pct');
+  const bar = document.getElementById('score-bar');
+  const label = document.getElementById('score-label');
+  const btnComplete = document.getElementById('btn-complete');
+
+  scoreEl.textContent = pct + '%';
+  scoreEl.className = 'score-number ' + (pass ? 'pass' : 'fail');
+  label.textContent = `${correct} of ${questions.length} correct — ${pass ? 'Passed! ✓' : 'Keep studying and try again.'}`;
+  bar.style.width = pct + '%';
+  bar.className = 'score-bar-fill ' + (pass ? 'pass' : 'fail');
+  btnComplete.disabled = !pass;
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('btn-submit').disabled = true;
+}
+
+function retakeQuiz() {
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function markComplete() {
+  localStorage.setItem('az104_quiz_passed_module_1', '1');
+  const btn = document.getElementById('btn-complete');
+  btn.textContent = '✓ Marked Complete';
+  btn.disabled = true;
+}
+
+buildQuiz();
+</script>
+
+</body>
+</html>

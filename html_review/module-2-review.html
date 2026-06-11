@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 2 Review — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-2-quiz.html" class="btn btn-secondary btn-sm">Take Quiz</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 2: Manage Identities &amp; Governance</h1>
+    <p class="subtitle">Microsoft Entra ID · Users &amp; Groups · Azure Architecture · Policy · RBAC · SSPR &nbsp;|&nbsp; <strong>20–25% of exam</strong></p>
+    <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <button class="btn btn-success btn-sm" onclick="markReviewed()">✓ Mark as Reviewed</button>
+      <a href="module-2-quiz.html" class="btn btn-primary btn-sm">Take Quiz →</a>
+    </div>
+  </div>
+
+  <div class="review-layout">
+    <aside class="review-sidebar">
+      <div class="review-sidebar-header">Contents</div>
+      <nav>
+        <a href="#entra-id">2.1 Microsoft Entra ID</a>
+        <a href="#users-groups">2.2 Users &amp; Groups</a>
+        <a href="#azure-arch">2.3 Azure Architecture</a>
+        <a href="#policy">2.4 Azure Policy</a>
+        <a href="#rbac">2.5 RBAC</a>
+        <a href="#sspr">2.6 SSPR</a>
+      </nav>
+    </aside>
+
+    <div class="review-content">
+
+      <!-- 2.1 Microsoft Entra ID -->
+      <div class="submodule-section" id="entra-id">
+        <div class="submodule-header"><h2>2.1 — Understand Microsoft Entra ID</h2></div>
+        <div class="submodule-body">
+
+          <h3>What is Microsoft Entra ID?</h3>
+          <p>Microsoft Entra ID (formerly Azure Active Directory) is a cloud-based <strong>identity and access management service</strong>. It is primarily designed for internet-based applications using HTTP (port 80) and HTTPS (port 443). It is a <strong>multi-tenant</strong> directory service.</p>
+
+          <h3>Entra ID vs Active Directory Domain Services (AD DS)</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.88rem;margin-bottom:1rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="text-align:left;padding:0.5rem;border:1px solid var(--azure-blue-light);">Feature</th><th style="text-align:left;padding:0.5rem;border:1px solid var(--azure-blue-light);">AD DS</th><th style="text-align:left;padding:0.5rem;border:1px solid var(--azure-blue-light);">Microsoft Entra ID</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Structure</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Hierarchical X.500</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Flat (no OUs/GPOs)</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Authentication</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Kerberos</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">SAML, WS-Federation, OpenID Connect</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Authorization</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Kerberos tickets</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">OAuth</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Querying</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">LDAP</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">REST API over HTTP/HTTPS</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Computer objects</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Yes</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">No (devices instead)</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">GPOs</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Yes</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">No</td></tr>
+              <tr><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">DNS</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Used for resource location</td><td style="padding:0.4rem 0.5rem;border:1px solid var(--neutral-light);">Not required</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Microsoft Entra ID License Tiers</h3>
+          <div class="key-points">
+            <h4>P1 — includes:</h4>
+            <ul>
+              <li>Self-service group management</li>
+              <li>Advanced security reports &amp; alerts (ML-based)</li>
+              <li>Multi-factor authentication (MFA)</li>
+              <li>Microsoft Identity Manager (MIM) licensing for hybrid identity</li>
+              <li>Enterprise SLA of 99.9%</li>
+              <li>Password reset with writeback to on-premises AD</li>
+              <li>Cloud App Discovery</li>
+              <li>Conditional Access based on device, group, or location</li>
+              <li>Microsoft Entra Connect Health</li>
+            </ul>
+          </div>
+          <div class="key-points">
+            <h4>P2 — adds (on top of P1):</h4>
+            <ul>
+              <li><strong>Microsoft Entra ID Protection</strong> — user risk policies, sign-in policies, behavior monitoring</li>
+              <li><strong>Microsoft Entra Privileged Identity Management (PIM)</strong> — permanent &amp; temporary admins, policy workflow for privileged access</li>
+            </ul>
+          </div>
+
+          <div class="key-points">
+            <h4>Key Facts</h4>
+            <ul>
+              <li>Entra ID uses <strong>OAuth</strong> for authorization (not Kerberos)</li>
+              <li>Identity protection feature monitors for irregular sign-in activities</li>
+              <li>Entra ID OU structure is flat — no Group Policy Objects (GPOs)</li>
+              <li>Microsoft Entra Connect Health: operational insight into identity infrastructure</li>
+              <li>MIM bridges on-premises stores (AD DS, LDAP, Oracle) to Entra ID</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 2.2 Users & Groups -->
+      <div class="submodule-section" id="users-groups">
+        <div class="submodule-header"><h2>2.2 — Create, Configure &amp; Manage Identities</h2></div>
+        <div class="submodule-body">
+
+          <h3>User Types in Microsoft Entra ID</h3>
+          <ul>
+            <li><strong>Cloud identities</strong> — exist only in Entra ID; deleted when removed from primary directory</li>
+            <li><strong>Directory-synchronized identities</strong> — originate in on-premises AD; synced via <strong>Microsoft Entra Cloud Sync</strong> (recommended for most) or <strong>Microsoft Entra Connect Sync</strong> (complex scenarios like device sync or groups &gt;50,000 members)</li>
+            <li><strong>Guest users</strong> — external accounts (other cloud providers, MSA); source is "Invited user"</li>
+          </ul>
+
+          <h3>Group Types</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.5rem;">
+            <div class="key-points">
+              <h4>Security Groups</h4>
+              <ul>
+                <li>Manage access to shared resources</li>
+                <li>Members: users, devices, service principals</li>
+                <li>Requires a Microsoft Entra administrator</li>
+              </ul>
+            </div>
+            <div class="key-points">
+              <h4>Microsoft 365 Groups</h4>
+              <ul>
+                <li>Collaboration: shared mailbox, calendar, files, SharePoint</li>
+                <li>Available to users and admins</li>
+                <li>Can include external users</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Group Membership Types</h3>
+          <ul>
+            <li><strong>Assigned</strong> — manually added/maintained</li>
+            <li><strong>Dynamic User</strong> — automatically managed based on user attributes (department, job title, location); requires <strong>Entra ID P1</strong></li>
+            <li><strong>Dynamic Device</strong> — same but for devices; security groups only (not M365 groups)</li>
+          </ul>
+
+          <h3>Group-based Licensing</h3>
+          <div class="key-points">
+            <ul>
+              <li>Assign licenses to a group; all members receive them automatically</li>
+              <li>Requires Entra ID P1 or higher (or Office 365 E3+)</li>
+              <li>You need at least as many licenses as unique members in licensed groups</li>
+              <li>License modifications effective within minutes of membership change</li>
+              <li>If same license from multiple sources, consumed only once</li>
+              <li>Managed via Microsoft 365 admin center</li>
+              <li>Always set <strong>usage location</strong> on user profiles before assigning licenses</li>
+            </ul>
+          </div>
+
+          <h3>Common License Error States</h3>
+          <ul>
+            <li><strong>CountViolation</strong> — not enough available licenses; increase license count</li>
+            <li><strong>MutuallyExclusiveViolation</strong> — conflicting licenses/service plans; remove conflicting items</li>
+            <li><strong>DependencyViolation</strong> — dependent service plans must be reassigned before removing a license</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 2.3 Azure Architecture -->
+      <div class="submodule-section" id="azure-arch">
+        <div class="submodule-header"><h2>2.3 — Core Azure Architectural Components</h2></div>
+        <div class="submodule-body">
+
+          <h3>Physical Infrastructure</h3>
+          <ul>
+            <li><strong>Datacenters</strong> — not accessed directly; grouped into regions and availability zones</li>
+            <li><strong>Regions</strong> — geographical area with one or more low-latency-linked datacenters; you choose a region when deploying resources</li>
+            <li><strong>Availability Zones</strong> — physically separate datacenters within a region with independent power/cooling/networking; minimum 3 zones in AZ-enabled regions</li>
+            <li><strong>Region Pairs</strong> — most regions paired with another region ≥300 miles away within the same geography; enables cross-region replication, prioritized recovery, staged updates</li>
+          </ul>
+
+          <div class="key-points">
+            <h4>Availability Zone Service Categories</h4>
+            <ul>
+              <li><strong>Zonal</strong> — pinned to a specific zone (VMs, managed disks, IP addresses)</li>
+              <li><strong>Zone-redundant</strong> — auto-replicates across zones (zone-redundant storage, SQL Database)</li>
+              <li><strong>Non-regional</strong> — globally resilient, not tied to a zone (Entra ID, Traffic Manager, DNS)</li>
+            </ul>
+          </div>
+
+          <div class="key-points">
+            <h4>Region Pair Key Facts</h4>
+            <ul>
+              <li>Planned updates rolled out one region at a time</li>
+              <li>Data residency remains within geography (except Brazil South → South Central US)</li>
+              <li>Brazil South: one-directional pair; South Central US's secondary is NOT Brazil South</li>
+              <li>Some newer regions (Italy North, Poland Central, Israel Central) use AZs + GRS instead of pairs</li>
+            </ul>
+          </div>
+
+          <h3>Management Infrastructure</h3>
+          <p>Hierarchy (top to bottom): <strong>Tenant Root Group → Management Groups → Subscriptions → Resource Groups → Resources</strong></p>
+          <ul>
+            <li><strong>Resources</strong> — VMs, VNets, DBs, etc.; each belongs to exactly one resource group; actions on a group affect all its resources</li>
+            <li><strong>Resource Groups</strong> — cannot be nested; cannot be renamed after creation; deleting a group deletes everything in it</li>
+            <li><strong>Subscriptions</strong> — unit of management, billing, and scale; two boundary types: <em>Billing boundary</em> (separate invoices) and <em>Access control boundary</em> (separate policies &amp; spending limits)</li>
+            <li><strong>Management Groups</strong> — organize subscriptions; policies applied at MG level inherit down; max 10,000 MGs per directory; max 6 nesting levels (not counting root/subscription)</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 2.4 Policy -->
+      <div class="submodule-section" id="policy">
+        <div class="submodule-header"><h2>2.4 — Azure Policy</h2></div>
+        <div class="submodule-body">
+
+          <h3>What is Azure Policy?</h3>
+          <p>Azure Policy assesses compliance at scale and enforces organizational and regulatory standards across Azure environments. It operates in the <strong>control plane</strong> and evaluates resources against policy rules. Policies can be assigned at <strong>Management Group, Subscription, or Resource Group</strong> level.</p>
+
+          <h3>Policy vs RBAC</h3>
+          <p>In the ARM request pipeline, <strong>RBAC is checked before Azure Policy</strong>. If a user lacks permissions (RBAC fails), Policy is never evaluated.</p>
+
+          <h3>Compliance Scanning</h3>
+          <ul>
+            <li><strong>Greenfield</strong> (policy-first) — policy evaluated at resource creation/update time</li>
+            <li><strong>Brownfield</strong> (resource-first) — existing resources evaluated by compliance scan; runs automatically every <strong>24 hours</strong> or can be triggered manually; non-compliant resources are flagged but not deleted</li>
+          </ul>
+
+          <h3>Policy Effects (then block)</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.85rem;margin-bottom:1rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="text-align:left;padding:0.4rem 0.5rem;border:1px solid var(--azure-blue-light);">Effect</th><th style="text-align:left;padding:0.4rem 0.5rem;border:1px solid var(--azure-blue-light);">Behavior</th><th style="text-align:left;padding:0.4rem 0.5rem;border:1px solid var(--azure-blue-light);">Eval Type</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);"><strong>deny</strong></td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Blocks non-compliant resource requests</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Sync</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>audit</strong></td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Logs a warning in activity log; doesn't block the request</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Async</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);"><strong>modify</strong></td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Adds, updates, or removes properties/tags on resources</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Sync</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>deployIfNotExists</strong></td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Runs a template deployment when condition is met</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Async</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);"><strong>auditIfNotExists</strong></td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Audits related resources missing required properties</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Async</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>disabled</strong></td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Deactivates the policy assignment; checked first</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Sync</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);"><strong>append</strong></td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Adds fields to resource (mostly obsolete; use modify)</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);">Sync</td></tr>
+              <tr><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>manual</strong></td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Self-attest compliance state via custom attestations</td><td style="padding:0.35rem 0.5rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Manual</td></tr>
+            </tbody>
+          </table>
+
+          <div class="key-points">
+            <h4>Enforcement Mode</h4>
+            <ul>
+              <li>Use <strong>Enforcement Mode Disabled</strong> when testing policies — evaluates compliance without applying the policy effect</li>
+              <li>Recommended rollout: start with disabled enforcement, then deploy in <strong>deployment rings</strong></li>
+            </ul>
+          </div>
+
+          <h3>Policy Logical Operators (if block)</h3>
+          <ul>
+            <li><code>allOf</code> — all conditions must be true (logical AND)</li>
+            <li><code>anyOf</code> — one or more conditions must be true (logical OR)</li>
+            <li><code>not</code> — inverts the result of a condition</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 2.5 RBAC -->
+      <div class="submodule-section" id="rbac">
+        <div class="submodule-header"><h2>2.5 — Secure Azure Resources with RBAC</h2></div>
+        <div class="submodule-body">
+
+          <h3>What is Azure RBAC?</h3>
+          <p>An <strong>authorization system</strong> built on Azure Resource Manager that provides fine-grained access management. You control access through <strong>role assignments</strong> — binding a role to a security principal at a specific scope.</p>
+
+          <h3>Role Assignment = Who + What + Where</h3>
+          <ul>
+            <li><strong>Security Principal (who)</strong> — user, group, service principal, or managed identity</li>
+            <li><strong>Role Definition (what)</strong> — a collection of permissions (read, write, delete); can be built-in or custom</li>
+            <li><strong>Scope (where)</strong> — Management Group → Subscription → Resource Group → Resource (child scopes inherit from parent)</li>
+          </ul>
+
+          <h3>Built-in Roles (4 fundamental)</h3>
+          <div class="key-points">
+            <ul>
+              <li><strong>Owner</strong> — full access to all resources + can delegate access to others</li>
+              <li><strong>Contributor</strong> — can create and manage all resource types; <em>cannot</em> grant access to others</li>
+              <li><strong>Reader</strong> — can view existing resources; no write/delete</li>
+              <li><strong>User Access Administrator</strong> — can manage user access to Azure resources</li>
+            </ul>
+          </div>
+
+          <h3>RBAC is an Allow Model</h3>
+          <p>Permissions are <em>additive</em> — multiple role assignments stack. The <code>NotActions</code> property creates exclusions from the <code>Actions</code> wildcard. Effective permissions = <code>Actions</code> minus <code>NotActions</code>.</p>
+
+          <h3>Key Operations</h3>
+          <ul>
+            <li>View who has access: <strong>Access control (IAM) pane</strong> in Azure portal</li>
+            <li>Check a specific user's access: resource/group → Access control (IAM) → Check Access</li>
+            <li>Review role assignments history: <strong>Activity log</strong> filtered on <em>Create role assignment (roleAssignments)</em> operation</li>
+            <li>Least-privilege: assign roles at the <em>narrowest scope</em> that satisfies the requirement</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 2.6 SSPR -->
+      <div class="submodule-section" id="sspr">
+        <div class="submodule-header"><h2>2.6 — Self-Service Password Reset (SSPR)</h2></div>
+        <div class="submodule-body">
+
+          <h3>What is SSPR?</h3>
+          <p>Allows users to reset their own passwords without calling the help desk. Requires <strong>Microsoft Entra ID P1 or P2</strong> (or Microsoft 365 Apps for business) for users who are not already signed in.</p>
+
+          <h3>SSPR Authentication Methods</h3>
+          <p>Six available methods; administrators choose which to enable (recommendation: enable ≥2):</p>
+          <ul>
+            <li>Mobile app notification (Authenticator)</li>
+            <li>Mobile app code (Authenticator)</li>
+            <li>Email (external address)</li>
+            <li>Mobile phone (SMS or automated call)</li>
+            <li>Office phone (automated call)</li>
+            <li>Security questions — <strong>least recommended</strong>; never use alone; not available for admin accounts</li>
+          </ul>
+
+          <div class="key-points">
+            <h4>Key Rules</h4>
+            <ul>
+              <li>Admin accounts always require a <strong>strong two-method policy</strong> regardless of tenant config</li>
+              <li>Security questions are NOT available for admin accounts</li>
+              <li>Mobile phone (SMS) is not a recommended primary method due to SMS fraud risk</li>
+              <li>A user is "registered for SSPR" once they've enrolled the required minimum number of methods</li>
+              <li><strong>Password writeback</strong> to on-premises AD requires Entra ID P1/P2 or M365 Apps for business</li>
+            </ul>
+          </div>
+
+          <h3>SSPR Rollout Scopes</h3>
+          <ul>
+            <li><strong>None</strong> — default; SSPR disabled for all users</li>
+            <li><strong>Selected</strong> — enabled for a specific security group (use for pilot testing)</li>
+            <li><strong>All</strong> — enabled for all users in the tenant</li>
+          </ul>
+
+          <h3>Notifications</h3>
+          <ul>
+            <li><strong>Notify users on password resets</strong> — alerts the user via primary/secondary email</li>
+            <li><strong>Notify all admins when other admins reset their password</strong> — cross-admin awareness</li>
+          </ul>
+
+          <h3>Password Writeback Deployment Options</h3>
+          <ul>
+            <li><strong>Microsoft Entra Connect</strong> — existing on-premises AD users; complex scenarios</li>
+            <li><strong>Cloud Sync</strong> — higher availability (no single agent dependency); supports disconnected domains (e.g., post-merger); can run side-by-side with Connect</li>
+          </ul>
+
+        </div>
+      </div>
+
+    </div><!-- /review-content -->
+  </div><!-- /review-layout -->
+
+</div>
+
+<script>
+function markReviewed() {
+  localStorage.setItem('az104_reviewed_module_2', '1');
+  const btn = event.target;
+  btn.textContent = '✓ Reviewed!';
+  btn.classList.remove('btn-success');
+  btn.classList.add('btn-secondary');
+  btn.disabled = true;
+}
+const sections = document.querySelectorAll('.submodule-section');
+const navLinks = document.querySelectorAll('.review-sidebar nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('current', a.getAttribute('href') === '#' + current); });
+});
+</script>
+</body>
+</html>

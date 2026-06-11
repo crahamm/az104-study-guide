@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 6 Quiz — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-6-review.html" class="btn btn-secondary btn-sm">Review Notes</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 6 Quiz</h1>
+    <p class="subtitle">Monitor &amp; Backup Resources — 10–15% of exam</p>
+  </div>
+
+  <div class="score-panel" id="score-panel">
+    <div class="score-number" id="score-pct"></div>
+    <div class="score-label" id="score-label"></div>
+    <div class="score-bar-track"><div class="score-bar-fill" id="score-bar"></div></div>
+    <div class="score-actions">
+      <button class="btn btn-secondary" onclick="retakeQuiz()">Retake Quiz</button>
+      <button class="btn btn-success" id="btn-complete" onclick="markComplete()" disabled>Mark Module Complete</button>
+      <a href="../index.html" class="btn btn-primary">Back to Home</a>
+    </div>
+  </div>
+
+  <div class="quiz-controls">
+    <div class="quiz-meta">
+      <span>Questions: <strong id="q-count"></strong></span>
+      <span>Pass threshold: <strong>70%</strong></span>
+    </div>
+    <button class="btn btn-primary" onclick="submitQuiz()" id="btn-submit">Submit Quiz</button>
+    <button class="btn btn-secondary" onclick="retakeQuiz()">Shuffle &amp; Restart</button>
+  </div>
+
+  <div id="quiz-container"></div>
+
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // From knowledge checks
+  { q: "Which tier allows for the quickest restore operations on a backup (instant restore)?", options: ["Snapshot tier", "Vault-standard tier", "Archive tier", "All tiers provide the same restore speed"], answer: 0, source: "6.1 Knowledge Check" },
+  { q: "What tool can you use to manage backups spanning multiple workload types, vaults, subscriptions, regions, and Azure Lighthouse tenants?", options: ["Backup Center", "Recovery Services vault dashboard", "Azure Monitor Workbooks", "Azure Resource Graph"], answer: 0, source: "6.1 Knowledge Check" },
+  { q: "What must be present before you can back up an entire VM or its content with Azure Backup?", options: ["Backup extensions", "A Recovery Services vault in the same resource group", "Azure Site Recovery enabled", "Azure Disk Encryption disabled"], answer: 0, source: "6.1 Knowledge Check" },
+  { q: "Which restore type should you select if you want to replace a disk on an existing virtual machine?", options: ["Replace existing", "Create a new VM", "Restore disk", "Cross-region restore"], answer: 0, source: "6.2 Knowledge Check" },
+  { q: "You want to replace a disk on an existing VM using Azure Backup but receive an error. What is the most likely reason?", options: ["The existing VM has been deleted and is no longer available", "The backup is stored in Archive tier only", "Disk replacement is not supported in the selected region", "You don't have the Backup Operator role"], answer: 0, source: "6.2 Knowledge Check" },
+  { q: "What are the two main types of monitoring data that Azure Monitor collects for Azure VMs?", options: ["Metrics and logs", "Snapshots and logs", "Performance counters and alerts", "Traces and metrics"], answer: 0, source: "6.3 Knowledge Check" },
+  // Synthesized
+  { q: "What is the primary difference between Azure Backup and Azure Site Recovery?", options: ["Azure Backup maintains point-in-time copies for recovery; Site Recovery provides near-real-time replication for failover during regional disasters", "Azure Backup is for on-premises workloads only; Site Recovery is for Azure VMs only", "Azure Backup requires infrastructure setup; Site Recovery is zero-infrastructure", "They are identical services with different names"], answer: 0, source: "6.2 Content" },
+  { q: "Azure Backup's soft delete feature retains deleted backup data for how many additional days?", options: ["14 days", "7 days", "30 days", "90 days"], answer: 0, source: "6.2 Content" },
+  { q: "Which VM backup snapshot consistency level is achieved when VSS is used to capture memory and pending I/O operations on a Windows VM?", options: ["Application consistent", "File system consistent", "Crash consistent", "Volume consistent"], answer: 0, source: "6.2 Content" },
+  { q: "VM snapshots in the snapshot tier are retained locally for a maximum of how many days?", options: ["5 days", "7 days", "14 days", "30 days"], answer: 0, source: "6.2 Content" },
+  { q: "Which backup type for SQL Server allows point-in-time recovery and can be configured every 15 minutes?", options: ["Transaction Log backup", "Differential backup", "Full backup", "Selective disk backup"], answer: 0, source: "6.2 Content" },
+  { q: "You need to restore individual files from a VM backup (not the entire VM). What method is used?", options: ["Mount the snapshot via iSCSI initiator on the target machine", "Use the Cross-region restore option", "Use Replace existing restore type", "Download the backup from the vault to a local machine"], answer: 0, source: "6.2 Content" },
+  { q: "Cross-region restore in Azure Backup allows you to restore to which destination?", options: ["The Azure paired secondary region", "Any region worldwide", "Only the same region as the source", "An on-premises location via ExpressRoute"], answer: 0, source: "6.2 Content" },
+  { q: "Azure Monitor automatically retains VM host metrics for how long by default?", options: ["93 days", "30 days", "365 days", "7 days"], answer: 0, source: "6.3 Content" },
+  { q: "Which tool in Azure Monitor allows you to plot multiple metrics, track them across VMs, and send graphs to workbooks or dashboards?", options: ["Azure Monitor Metrics Explorer", "Log Analytics workspace", "Azure Monitor Alerts", "Backup Center"], answer: 0, source: "6.3 Content" },
+  { q: "To collect guest OS metrics and logs (beyond host-level metrics) for a VM, what must you install and configure?", options: ["Azure Monitor Agent + a Data Collection Rule (DCR)", "Boot diagnostics extension + Log Analytics workspace", "MARS agent + Recovery Services vault", "Azure Backup extension + Diagnostic settings"], answer: 0, source: "6.3 Content" },
+  { q: "Which Azure Monitor feature simplifies guest OS monitoring by providing preconfigured DCRs, predefined performance charts, and optionally a dependency map?", options: ["VM insights", "Backup Explorer", "Boot diagnostics", "Activity logs"], answer: 0, source: "6.3 Content" },
+  { q: "Which GRS replication option is recommended for Recovery Services vaults used for backup?", options: ["Geo-redundant storage (GRS)", "Locally redundant storage (LRS)", "Zone-redundant storage (ZRS)", "Read-access geo-redundant storage (RA-GRS)"], answer: 0, source: "6.1 Content" },
+  { q: "What is Recovery Point Objective (RPO) in the context of Azure Backup?", options: ["The maximum amount of data loss, measured in time, that an organization can sustain during a disaster", "The target time within which a business process must be restored after a disaster", "The minimum frequency at which snapshots are taken by Azure Backup", "The maximum number of restore points that can be stored in a vault"], answer: 0, source: "6.1 Content" },
+];
+
+let questions = [];
+function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function buildQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  document.getElementById('q-count').textContent = questions.length;
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const opts = shuffle(q.options.map((o, idx) => ({ text: o, origIdx: idx })));
+    const correctShuffledIdx = opts.findIndex(o => o.origIdx === q.answer);
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.dataset.correct = correctShuffledIdx;
+    card.innerHTML = `<div class="q-header"><div class="q-num">${i+1}</div><div><div class="q-text">${q.q}</div><div class="q-source">${q.source}</div></div></div>
+      <ul class="q-options">${opts.map((o,oi)=>`<li><label><input type="radio" name="q${i}" value="${oi}">${o.text}</label></li>`).join('')}</ul>
+      <div class="q-explanation" id="exp-${i}"></div>`;
+    container.appendChild(card);
+  });
+  document.getElementById('score-panel').classList.remove('visible');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function submitQuiz() {
+  const cards = document.querySelectorAll('.question-card');
+  let correct = 0;
+  cards.forEach((card, i) => {
+    const correctIdx = parseInt(card.dataset.correct);
+    const selected = card.querySelector(`input[name="q${i}"]:checked`);
+    const labels = card.querySelectorAll('.q-options label');
+    const exp = document.getElementById(`exp-${i}`);
+    card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+    if (!selected) {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      exp.textContent = `No answer selected. Correct: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible'); return;
+    }
+    const sel = parseInt(selected.value);
+    if (sel === correctIdx) { correct++; card.classList.add('correct'); }
+    else {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      labels[sel].classList.add('wrong-selected');
+      exp.textContent = `Correct answer: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible');
+    }
+  });
+  const pct = Math.round((correct / questions.length) * 100);
+  const pass = pct >= 70;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-pct').className = 'score-number ' + (pass ? 'pass' : 'fail');
+  document.getElementById('score-label').textContent = `${correct} of ${questions.length} correct — ${pass ? 'Passed! ✓' : 'Keep studying and try again.'}`;
+  document.getElementById('score-bar').style.width = pct + '%';
+  document.getElementById('score-bar').className = 'score-bar-fill ' + (pass ? 'pass' : 'fail');
+  document.getElementById('btn-complete').disabled = !pass;
+  document.getElementById('score-panel').classList.add('visible');
+  document.getElementById('score-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('btn-submit').disabled = true;
+}
+
+function retakeQuiz() { buildQuiz(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function markComplete() { localStorage.setItem('az104_quiz_passed_module_6', '1'); document.getElementById('btn-complete').textContent = '✓ Marked Complete'; document.getElementById('btn-complete').disabled = true; }
+
+buildQuiz();
+</script>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZ-104 Study Guide</title>
+  <link rel="stylesheet" href="html_review/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+</header>
+
+<div class="page-container">
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <h1>Microsoft Azure Administrator</h1>
+    <p class="subtitle">AZ-104 Certification Exam — Study Guide &amp; Practice Quizzes</p>
+  </div>
+
+  <!-- Overview -->
+  <div class="section-panel">
+    <div class="section-panel-header" onclick="togglePanel(this)">
+      <h2>Certification Overview</h2>
+      <span class="toggle-icon">▾</span>
+    </div>
+    <div class="section-panel-body">
+      <p>As a candidate for this certification, you should have subject matter expertise in implementing, managing, and monitoring an organization's Microsoft Azure environment, including virtual networks, storage, compute, identity, security, and governance.</p>
+      <p>As an Azure administrator, you often serve as part of a larger team dedicated to implementing an organization's cloud infrastructure. You also coordinate with other roles to deliver Azure networking, security, database, application development, and DevOps solutions.</p>
+
+      <div class="overview-grid">
+        <div class="overview-item"><div class="label">Duration</div><div class="value">100 minutes</div></div>
+        <div class="overview-item"><div class="label">Price</div><div class="value">$165 USD</div></div>
+        <div class="overview-item"><div class="label">Retake Policy</div><div class="value">24h after 1st fail</div></div>
+        <div class="overview-item"><div class="label">Proctored</div><div class="value">Yes (Pearson Vue)</div></div>
+      </div>
+
+      <h3>Prerequisites</h3>
+      <p>You should be familiar with operating systems, networking, servers, and virtualization. Experience with PowerShell, Azure CLI, the Azure portal, ARM templates or Bicep files, and Microsoft Entra ID is expected.</p>
+
+      <p style="margin-top:1rem;"><strong>Tip:</strong> Register with a personal MSA account (not a work/school account) to ensure exam records are not lost if you leave your organization.</p>
+    </div>
+  </div>
+
+  <!-- Exam Objectives -->
+  <div class="section-panel">
+    <div class="section-panel-header" onclick="togglePanel(this)">
+      <h2>Exam Objectives</h2>
+      <span class="toggle-icon">▾</span>
+    </div>
+    <div class="section-panel-body">
+
+      <details class="objectives-domain" open>
+        <summary>Manage Azure identities and governance <span class="weight">20–25%</span></summary>
+        <div class="domain-body">
+          <div class="subdomain">
+            <h4>Manage Microsoft Entra users and groups</h4>
+            <ul>
+              <li>Create users and groups</li>
+              <li>Manage user and group properties</li>
+              <li>Manage licenses in Microsoft Entra ID</li>
+              <li>Manage external users</li>
+              <li>Configure self-service password reset (SSPR)</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Manage access to Azure resources</h4>
+            <ul>
+              <li>Manage built-in Azure roles</li>
+              <li>Assign roles at different scopes</li>
+              <li>Interpret access assignments</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Manage Azure subscriptions and governance</h4>
+            <ul>
+              <li>Implement and manage Azure Policy</li>
+              <li>Configure resource locks</li>
+              <li>Apply and manage tags on resources</li>
+              <li>Manage resource groups</li>
+              <li>Manage subscriptions</li>
+              <li>Manage costs by using alerts, budgets, and Azure Advisor recommendations</li>
+              <li>Configure management groups</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <details class="objectives-domain">
+        <summary>Implement and manage storage <span class="weight">15–20%</span></summary>
+        <div class="domain-body">
+          <div class="subdomain">
+            <h4>Configure access to storage</h4>
+            <ul>
+              <li>Configure Azure Storage firewalls and virtual networks</li>
+              <li>Create and use shared access signature (SAS) tokens</li>
+              <li>Configure stored access policies</li>
+              <li>Manage access keys</li>
+              <li>Configure identity-based access for Azure Files</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Configure and manage storage accounts</h4>
+            <ul>
+              <li>Create and configure storage accounts</li>
+              <li>Configure Azure Storage redundancy</li>
+              <li>Configure object replication</li>
+              <li>Configure storage account encryption</li>
+              <li>Manage data by using Azure Storage Explorer and AzCopy</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Configure Azure Files and Azure Blob Storage</h4>
+            <ul>
+              <li>Create and configure a file share in Azure Files</li>
+              <li>Create and configure a container in Azure Blob Storage</li>
+              <li>Configure storage tiers</li>
+              <li>Configure soft delete for blobs and containers</li>
+              <li>Configure snapshots and soft delete for Azure Files</li>
+              <li>Configure blob lifecycle management</li>
+              <li>Configure blob versioning</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <details class="objectives-domain">
+        <summary>Deploy and manage Azure compute resources <span class="weight">20–25%</span></summary>
+        <div class="domain-body">
+          <div class="subdomain">
+            <h4>Automate deployment with ARM templates or Bicep files</h4>
+            <ul>
+              <li>Interpret an Azure Resource Manager template or a Bicep file</li>
+              <li>Modify an existing ARM template or Bicep file</li>
+              <li>Deploy resources by using an ARM template or Bicep file</li>
+              <li>Export a deployment as an ARM template or convert to Bicep</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Create and configure virtual machines</h4>
+            <ul>
+              <li>Create a virtual machine</li>
+              <li>Configure encryption at host for Azure VMs</li>
+              <li>Move a VM to another resource group, subscription, or region</li>
+              <li>Manage virtual machine sizes and disks</li>
+              <li>Deploy VMs to availability zones and availability sets</li>
+              <li>Deploy and configure Azure Virtual Machine Scale Sets</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Provision and manage containers</h4>
+            <ul>
+              <li>Create and manage an Azure Container Registry</li>
+              <li>Provision a container by using Azure Container Instances</li>
+              <li>Provision a container by using Azure Container Apps</li>
+              <li>Manage sizing and scaling for containers</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Create and configure Azure App Service</h4>
+            <ul>
+              <li>Provision an App Service plan</li>
+              <li>Configure scaling for an App Service plan</li>
+              <li>Create an App Service</li>
+              <li>Configure certificates and TLS</li>
+              <li>Map an existing custom DNS name</li>
+              <li>Configure backup and deployment slots</li>
+              <li>Configure networking settings</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <details class="objectives-domain">
+        <summary>Implement and manage virtual networking <span class="weight">15–20%</span></summary>
+        <div class="domain-body">
+          <div class="subdomain">
+            <h4>Configure and manage virtual networks</h4>
+            <ul>
+              <li>Create and configure virtual networks and subnets</li>
+              <li>Create and configure virtual network peering</li>
+              <li>Configure public IP addresses</li>
+              <li>Configure user-defined routes</li>
+              <li>Troubleshoot network connectivity</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Configure secure access to virtual networks</h4>
+            <ul>
+              <li>Create and configure NSGs and application security groups</li>
+              <li>Evaluate effective security rules in NSGs</li>
+              <li>Implement Azure Bastion</li>
+              <li>Configure service endpoints and private endpoints for PaaS</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Configure name resolution and load balancing</h4>
+            <ul>
+              <li>Configure Azure DNS</li>
+              <li>Configure an internal or public load balancer</li>
+              <li>Troubleshoot load balancing</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <details class="objectives-domain">
+        <summary>Monitor and maintain Azure resources <span class="weight">10–15%</span></summary>
+        <div class="domain-body">
+          <div class="subdomain">
+            <h4>Monitor resources in Azure</h4>
+            <ul>
+              <li>Interpret metrics in Azure Monitor</li>
+              <li>Configure log settings in Azure Monitor</li>
+              <li>Query and analyze logs in Azure Monitor</li>
+              <li>Set up alert rules, action groups, and alert processing rules</li>
+              <li>Configure and interpret monitoring of VMs, storage accounts, and networks using Azure Monitor Insights</li>
+              <li>Use Azure Network Watcher and Connection monitor</li>
+            </ul>
+          </div>
+          <div class="subdomain">
+            <h4>Implement backup and recovery</h4>
+            <ul>
+              <li>Create a Recovery Services vault and Azure Backup vault</li>
+              <li>Create and configure a backup policy</li>
+              <li>Perform backup and restore operations using Azure Backup</li>
+              <li>Configure Azure Site Recovery for Azure resources</li>
+              <li>Perform a failover to a secondary region using Site Recovery</li>
+              <li>Configure and interpret reports and alerts for backups</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+  <!-- Module Table of Contents -->
+  <h2 style="margin-bottom:1rem;">Course Modules</h2>
+  <div class="card-grid">
+
+    <!-- Module 1 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="module-num">1</div>
+        <div>
+          <div class="card-title">Administrator Prerequisites</div>
+          <div class="card-weight">Foundational skills</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="submodule-list">
+          <li>Intro to Azure Cloud Shell</li>
+          <li>Create ARM Templates with VS Code</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <a href="html_review/module-1-review.html" class="btn btn-primary btn-sm">Review</a>
+        <a href="html_review/module-1-quiz.html" class="btn btn-secondary btn-sm">Quiz</a>
+        <span id="badge-reviewed-1" class="badge badge-reviewed badge-hidden">✓ Reviewed</span>
+        <span id="badge-quiz-1" class="badge badge-quiz badge-hidden">✓ Quiz Passed</span>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="module-num">2</div>
+        <div>
+          <div class="card-title">Manage Identities &amp; Governance</div>
+          <div class="card-weight">20–25% of exam</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="submodule-list">
+          <li>Understand Microsoft Entra ID</li>
+          <li>Create &amp; Configure Managed Identities</li>
+          <li>Core Azure Architecture</li>
+          <li>Sovereignty, Policy &amp; Initiatives</li>
+          <li>Secure Resources with RBAC</li>
+          <li>Self-Service Password Reset</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <a href="html_review/module-2-review.html" class="btn btn-primary btn-sm">Review</a>
+        <a href="html_review/module-2-quiz.html" class="btn btn-secondary btn-sm">Quiz</a>
+        <span id="badge-reviewed-2" class="badge badge-reviewed badge-hidden">✓ Reviewed</span>
+        <span id="badge-quiz-2" class="badge badge-quiz badge-hidden">✓ Quiz Passed</span>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="module-num">3</div>
+        <div>
+          <div class="card-title">Manage Virtual Networks</div>
+          <div class="card-weight">15–20% of exam</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="submodule-list">
+          <li>Configure Virtual Networks</li>
+          <li>Configure NSGs</li>
+          <li>Host a Domain with Azure DNS</li>
+          <li>Configure VNet Peering</li>
+          <li>Control Traffic Flow with Routes</li>
+          <li>Intro to Azure Load Balancer</li>
+          <li>Intro to Azure Application Gateway</li>
+          <li>Intro to Azure Network Watcher</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <a href="html_review/module-3-review.html" class="btn btn-primary btn-sm">Review</a>
+        <a href="html_review/module-3-quiz.html" class="btn btn-secondary btn-sm">Quiz</a>
+        <span id="badge-reviewed-3" class="badge badge-reviewed badge-hidden">✓ Reviewed</span>
+        <span id="badge-quiz-3" class="badge badge-quiz badge-hidden">✓ Quiz Passed</span>
+      </div>
+    </div>
+
+    <!-- Module 4 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="module-num">4</div>
+        <div>
+          <div class="card-title">Manage Storage</div>
+          <div class="card-weight">15–20% of exam</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="submodule-list">
+          <li>Configure Storage Accounts</li>
+          <li>Configure Blob Storage</li>
+          <li>Configure Storage Security</li>
+          <li>Configure Azure Files &amp; File Sync</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <a href="html_review/module-4-review.html" class="btn btn-primary btn-sm">Review</a>
+        <a href="html_review/module-4-quiz.html" class="btn btn-secondary btn-sm">Quiz</a>
+        <span id="badge-reviewed-4" class="badge badge-reviewed badge-hidden">✓ Reviewed</span>
+        <span id="badge-quiz-4" class="badge badge-quiz badge-hidden">✓ Quiz Passed</span>
+      </div>
+    </div>
+
+    <!-- Module 5 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="module-num">5</div>
+        <div>
+          <div class="card-title">Manage Compute Resources</div>
+          <div class="card-weight">20–25% of exam</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="submodule-list">
+          <li>Intro to Azure Virtual Machines</li>
+          <li>Configure VM Availability</li>
+          <li>Configure App Service Plans</li>
+          <li>Configure Azure App Services</li>
+          <li>Configure Azure Container Instances</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <a href="html_review/module-5-review.html" class="btn btn-primary btn-sm">Review</a>
+        <a href="html_review/module-5-quiz.html" class="btn btn-secondary btn-sm">Quiz</a>
+        <span id="badge-reviewed-5" class="badge badge-reviewed badge-hidden">✓ Reviewed</span>
+        <span id="badge-quiz-5" class="badge badge-quiz badge-hidden">✓ Quiz Passed</span>
+      </div>
+    </div>
+
+    <!-- Module 6 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="module-num">6</div>
+        <div>
+          <div class="card-title">Monitor &amp; Backup Resources</div>
+          <div class="card-weight">10–15% of exam</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="submodule-list">
+          <li>Intro to Azure Backup</li>
+          <li>Protect VMs with Azure Backup</li>
+          <li>Monitor Azure VM using Diagnostic Data</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <a href="html_review/module-6-review.html" class="btn btn-primary btn-sm">Review</a>
+        <a href="html_review/module-6-quiz.html" class="btn btn-secondary btn-sm">Quiz</a>
+        <span id="badge-reviewed-6" class="badge badge-reviewed badge-hidden">✓ Reviewed</span>
+        <span id="badge-quiz-6" class="badge badge-quiz badge-hidden">✓ Quiz Passed</span>
+      </div>
+    </div>
+
+  </div><!-- /card-grid -->
+
+  <!-- Practice Assessment -->
+  <h2 style="margin-bottom:1rem; margin-top:2rem; padding-left:0.75rem; border-left:4px solid var(--azure-blue);">Practice Assessment</h2>
+  <div class="section-panel" style="border-left:4px solid var(--azure-blue);">
+    <div style="padding:1.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1.25rem;">
+      <div style="flex:1; min-width:220px;">
+        <h3 style="margin:0 0 0.4rem;">AZ-104 Full Practice Exam</h3>
+        <p style="margin:0 0 0.75rem; color:var(--neutral-secondary); font-size:0.92rem;">45 questions drawn from all 6 modules, weighted by exam domain. Covers identities, networking, storage, compute, and monitoring. Pass threshold is <strong>70%</strong> — the same as the real exam.</p>
+        <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+          <a href="html_review/practice-assessment.html" class="btn btn-primary">Start Assessment →</a>
+          <span id="badge-assessment" class="badge badge-reviewed badge-hidden">✓ Assessment Passed</span>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; font-size:0.82rem; min-width:180px;">
+        <div style="background:var(--azure-blue-lighter);border-radius:4px;padding:0.5rem 0.75rem;"><div style="color:var(--azure-blue-dark);font-weight:700;">45</div><div style="color:var(--neutral-secondary);">questions</div></div>
+        <div style="background:var(--azure-blue-lighter);border-radius:4px;padding:0.5rem 0.75rem;"><div style="color:var(--azure-blue-dark);font-weight:700;">70%</div><div style="color:var(--neutral-secondary);">to pass</div></div>
+        <div style="background:var(--azure-blue-lighter);border-radius:4px;padding:0.5rem 0.75rem;"><div style="color:var(--azure-blue-dark);font-weight:700;">6</div><div style="color:var(--neutral-secondary);">modules</div></div>
+        <div style="background:var(--azure-blue-lighter);border-radius:4px;padding:0.5rem 0.75rem;"><div style="color:var(--azure-blue-dark);font-weight:700;">Shuffled</div><div style="color:var(--neutral-secondary);">each attempt</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-container -->
+
+<script>
+function togglePanel(header) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('.toggle-icon');
+  body.classList.toggle('hidden');
+  header.classList.toggle('collapsed');
+}
+
+// Load progress badges from localStorage
+(function() {
+  for (let i = 1; i <= 6; i++) {
+    if (localStorage.getItem('az104_reviewed_module_' + i)) {
+      document.getElementById('badge-reviewed-' + i)?.classList.remove('badge-hidden');
+    }
+    if (localStorage.getItem('az104_quiz_passed_module_' + i)) {
+      document.getElementById('badge-quiz-' + i)?.classList.remove('badge-hidden');
+    }
+  }
+  if (localStorage.getItem('az104_assessment_passed')) {
+    document.getElementById('badge-assessment')?.classList.remove('badge-hidden');
+  }
+})();
+</script>
+
+</body>
+</html>

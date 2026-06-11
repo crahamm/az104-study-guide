@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 5 Review — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-5-quiz.html" class="btn btn-secondary btn-sm">Take Quiz</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 5: Manage Compute Resources</h1>
+    <p class="subtitle">Virtual Machines · VM Availability · App Service Plans · App Services · Container Instances &nbsp;|&nbsp; <strong>20–25% of exam</strong></p>
+    <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <button class="btn btn-success btn-sm" onclick="markReviewed()">✓ Mark as Reviewed</button>
+      <a href="module-5-quiz.html" class="btn btn-primary btn-sm">Take Quiz →</a>
+    </div>
+  </div>
+
+  <div class="review-layout">
+    <aside class="review-sidebar">
+      <div class="review-sidebar-header">Contents</div>
+      <nav>
+        <a href="#vms">5.1 Azure VMs</a>
+        <a href="#vm-availability">5.2 VM Availability</a>
+        <a href="#app-service-plans">5.3 App Service Plans</a>
+        <a href="#app-services">5.4 Azure App Services</a>
+        <a href="#containers">5.5 Container Instances</a>
+      </nav>
+    </aside>
+
+    <div class="review-content">
+
+      <!-- 5.1 Azure VMs -->
+      <div class="submodule-section" id="vms">
+        <div class="submodule-header"><h2>5.1 — Intro to Azure Virtual Machines</h2></div>
+        <div class="submodule-body">
+
+          <h3>VM Creation Checklist</h3>
+          <ul class="objectives-list">
+            <li>The network (VNet, subnets, overlapping address spaces)</li>
+            <li>VM name (up to 64 chars Linux / 15 chars Windows; used as computer name)</li>
+            <li>Location/region (affects available sizes, pricing, compliance)</li>
+            <li>VM size (CPU, memory, disk trade-offs)</li>
+            <li>Disks (OS disk + data disks; separate data from OS)</li>
+            <li>Operating system (affects licensing cost)</li>
+          </ul>
+
+          <h3>VM Size Families</h3>
+          <div class="key-points">
+            <ul>
+              <li><strong>General purpose</strong> — balanced CPU/memory; testing, dev, small DBs, web servers</li>
+              <li><strong>Compute optimized</strong> — high CPU-to-memory; medium web servers, batch, app servers</li>
+              <li><strong>Memory optimized</strong> — high memory-to-CPU; relational DBs, large caches, in-memory analytics</li>
+              <li><strong>Storage optimized</strong> — high disk throughput/IOPS; databases</li>
+              <li><strong>GPU</strong> — graphics rendering, video editing, deep learning model training/inference</li>
+              <li><strong>High performance compute</strong> — fastest CPUs, optional high-throughput networking</li>
+            </ul>
+          </div>
+
+          <h3>VM Billing Model</h3>
+          <ul>
+            <li><strong>Compute</strong> — billed per minute; stops when VM is <em>stopped and deallocated</em> (not just stopped). Includes OS license for Windows. Cheaper for Linux.</li>
+            <li><strong>Storage</strong> — billed separately; charged even when VM is stopped/deallocated</li>
+            <li><strong>Reserved VM Instances (RI)</strong> — 1 or 3-year commitment; up to 72% savings vs pay-as-you-go</li>
+            <li><strong>Azure Hybrid Benefit</strong> — reuse on-premises Windows/Linux licenses on Azure VMs</li>
+          </ul>
+
+          <h3>VM Disk Types</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin-bottom:1rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="padding:0.35rem;border:1px solid var(--azure-blue-light);">Type</th><th style="padding:0.35rem;border:1px solid var(--azure-blue-light);">Max IOPS</th><th style="padding:0.35rem;border:1px solid var(--azure-blue-light);">OS Disk?</th><th style="padding:0.35rem;border:1px solid var(--azure-blue-light);">Use Case</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.3rem;border:1px solid var(--neutral-light);"><strong>Ultra Disk</strong></td><td style="padding:0.3rem;border:1px solid var(--neutral-light);">160,000</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);">No</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);">SAP HANA, top-tier DBs, transaction-heavy</td></tr>
+              <tr><td style="padding:0.3rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>Premium SSD v2</strong></td><td style="padding:0.3rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">80,000</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">No</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Production, performance-sensitive, low latency</td></tr>
+              <tr><td style="padding:0.3rem;border:1px solid var(--neutral-light);"><strong>Premium SSD</strong></td><td style="padding:0.3rem;border:1px solid var(--neutral-light);">20,000</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);">Yes</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);">Production and perf-sensitive workloads</td></tr>
+              <tr><td style="padding:0.3rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>Standard SSD</strong></td><td style="padding:0.3rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">6,000</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Yes</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Web servers, lightly used enterprise, dev/test</td></tr>
+              <tr><td style="padding:0.3rem;border:1px solid var(--neutral-light);"><strong>Standard HDD</strong></td><td style="padding:0.3rem;border:1px solid var(--neutral-light);">2,000</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);">Yes</td><td style="padding:0.3rem;border:1px solid var(--neutral-light);">Backup, noncritical, infrequent access</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Note:</strong> Azure reserves the first 4 IP addresses and the last 1 in each subnet for internal use.</p>
+
+        </div>
+      </div>
+
+      <!-- 5.2 VM Availability -->
+      <div class="submodule-section" id="vm-availability">
+        <div class="submodule-header"><h2>5.2 — Configure VM Availability</h2></div>
+        <div class="submodule-body">
+
+          <h3>Availability Sets</h3>
+          <p>Group VMs within a datacenter across <strong>fault domains</strong> and <strong>update domains</strong> to avoid single points of failure.</p>
+          <div class="key-points">
+            <ul>
+              <li><strong>Fault domains (FD)</strong> — VMs in different FDs share no common power or network switch; default 2 FDs, max 3</li>
+              <li><strong>Update domains (UD)</strong> — VMs in different UDs are not rebooted simultaneously during planned maintenance; default 5 UDs, up to 20</li>
+              <li>Provides <strong>99.95% SLA</strong> when ≥2 VMs in an availability set</li>
+              <li>Must be set at VM creation — cannot add to an existing availability set later</li>
+              <li>All VMs in an availability set are within a single datacenter (same region); no protection against datacenter failure</li>
+            </ul>
+          </div>
+
+          <h3>Availability Zones</h3>
+          <p>Deploy VMs to physically separate datacenters (different power, cooling, networking) within a region. Provides <strong>99.99% SLA</strong>. Protects against datacenter-level failures.</p>
+
+          <h3>Virtual Machine Scale Sets (VMSS)</h3>
+          <p>Create and manage a group of identical, load-balanced VMs that can automatically scale based on demand or a schedule.</p>
+          <div class="key-points">
+            <ul>
+              <li>All instances use the same base OS image and configuration</li>
+              <li>Integrates with Azure Load Balancer or Application Gateway</li>
+              <li>Supports <strong>autoscaling</strong> with scale-out (add VMs) and scale-in (remove VMs) based on rules</li>
+              <li><strong>Scale up</strong> = increase VM size (more CPU/RAM) — no extra VMs added</li>
+              <li><strong>Scale out</strong> = add more VM instances (horizontal scaling)</li>
+            </ul>
+          </div>
+
+          <h3>Autoscale Rules</h3>
+          <ul>
+            <li><strong>Metric-based</strong> — scale based on CPU %, memory %, queue length, etc.</li>
+            <li><strong>Time-based (schedule)</strong> — scale at specific times; e.g., scale out at 8:00 AM on Saturdays</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 5.3 App Service Plans -->
+      <div class="submodule-section" id="app-service-plans">
+        <div class="submodule-header"><h2>5.3 — Configure App Service Plans</h2></div>
+        <div class="submodule-body">
+
+          <h3>What is an App Service Plan?</h3>
+          <p>Defines the compute resources for web apps to run on. All apps in the same plan share the same VM instances. The plan is the <strong>scale unit</strong> for App Service — if you scale the plan, all apps in it scale together.</p>
+
+          <h3>Pricing Tiers (3 Categories)</h3>
+          <div class="key-points">
+            <h4>Shared Compute — Dev/Test only; NO SLA</h4>
+            <ul>
+              <li><strong>Free (F1)</strong> &amp; <strong>Shared (D1)</strong> — run on same VMs as other customers' apps; CPU quotas only; no scale-out</li>
+            </ul>
+          </div>
+          <div class="key-points">
+            <h4>Dedicated Compute — Production workloads</h4>
+            <ul>
+              <li><strong>Basic (B)</strong> — dedicated VMs, manual scaling up to 3 instances; no autoscale, no staging slots</li>
+              <li><strong>Standard (S)</strong> — auto scale, up to 10 instances, 5 staging slots, 10 daily backups</li>
+              <li><strong>Premium (P) / PremiumV3 (P1V3)</strong> — higher performance, up to 30 instances, 20 staging slots; recommended for new production deployments</li>
+            </ul>
+          </div>
+          <div class="key-points">
+            <h4>Isolated — Network + compute isolation; max scale</h4>
+            <ul>
+              <li><strong>Isolated / IsolatedV2</strong> — dedicated VNet; up to 200 instances; for mission-critical, compliance-sensitive workloads</li>
+            </ul>
+          </div>
+
+          <h3>Scale Up vs Scale Out</h3>
+          <ul>
+            <li><strong>Scale up</strong> — increase plan tier for more CPU, memory, disk; no additional VMs</li>
+            <li><strong>Scale out</strong> — add more VM instances running the same app</li>
+          </ul>
+
+          <h3>Time-based autoscale rule example:</h3>
+          <p>Triggering a scale event at 8:00 AM on Saturdays = <strong>time-based (schedule) rule</strong>.</p>
+
+        </div>
+      </div>
+
+      <!-- 5.4 App Services -->
+      <div class="submodule-section" id="app-services">
+        <div class="submodule-header"><h2>5.4 — Configure Azure App Services</h2></div>
+        <div class="submodule-body">
+
+          <h3>What is Azure App Service?</h3>
+          <p>Fully managed PaaS platform for hosting web apps, REST APIs, and mobile backends. Supports Windows and Linux. Languages: ASP.NET, Java, Node.js, Python, PHP, Ruby, .NET.</p>
+
+          <h3>Deployment Slots</h3>
+          <p>Live apps with their own hostnames; content and config can be swapped between slots (including production).</p>
+          <div class="key-points">
+            <ul>
+              <li>Available in <strong>Standard, Premium, and Isolated</strong> tiers (not Free or Basic)</li>
+              <li>Standard: 5 slots; Premium/Isolated: 20 slots</li>
+              <li><strong>Swap</strong> — swap staging ↔ production with zero downtime; all instances in the destination slot are warm before traffic redirects</li>
+              <li><strong>Auto swap</strong> — deploy to slot → automatically swaps to production when warmed up; for CI/CD zero-downtime workflows</li>
+              <li><strong>Restore last known good</strong> — swap back immediately if a deployment is bad</li>
+            </ul>
+          </div>
+
+          <h3>Sticky vs Non-sticky Settings</h3>
+          <ul>
+            <li><strong>Sticky (slot-specific)</strong> — stays with the slot when swapped: connection strings (when marked slot-specific), app settings marked as slot-specific</li>
+            <li><strong>Non-sticky (follows content)</strong> — moves with the swap: <strong>connection strings (by default)</strong>, general app settings</li>
+          </ul>
+          <p><strong>Exam tip:</strong> Connection strings follow the content across a swap.</p>
+
+          <h3>Automated Deployment Sources</h3>
+          <ul>
+            <li>GitHub, Azure DevOps, Bitbucket, Docker Hub, Azure Container Registry</li>
+          </ul>
+
+          <h3>Monitoring: Application Insights</h3>
+          <p>Provides detailed telemetry about your web app — page usage, traffic by time of day, user location, performance metrics. Use for Marketing/analytics questions about which pages are popular and when.</p>
+
+          <h3>Backup</h3>
+          <ul>
+            <li>Available in Standard and above tiers</li>
+            <li>Can back up app + database; store in Azure Storage</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 5.5 Container Instances -->
+      <div class="submodule-section" id="containers">
+        <div class="submodule-header"><h2>5.5 — Configure Azure Container Instances</h2></div>
+        <div class="submodule-body">
+
+          <h3>Containers vs Virtual Machines</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.88rem;margin-bottom:1rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Feature</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Containers</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Virtual Machines</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Isolation</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Lightweight isolation (OS-level)</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Strong security boundary (hardware-level)</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">OS overhead</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Shares host OS kernel; minimal overhead</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Full OS per VM; higher resource usage</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Startup time</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Seconds</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Minutes</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Persistent storage</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Azure Disks (single node) or Azure Files (multi-node)</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">VHD for local; SMB share for multi-server</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Deployment</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Docker CLI (single), AKS (multi)</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Azure portal, PowerShell, SCVMM</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Best for</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Speed, density, CI/CD, isolated tasks</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Strong security isolation, multi-tenant hosting</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Azure Container Instances (ACI)</h3>
+          <p>Fastest and simplest way to run a container in Azure <strong>without managing VMs</strong>. Great for isolated, short-lived container workloads.</p>
+          <div class="key-points">
+            <ul>
+              <li>Start in <strong>seconds</strong> — no VM provisioning needed</li>
+              <li>Expose directly to internet with public IP and FQDN</li>
+              <li>Custom CPU (0.1–4 vCPU) and memory (0.1–16 GB) per container group</li>
+              <li>Supports Linux and Windows containers</li>
+              <li>Mount Azure Files file shares for persistent storage</li>
+              <li>Linux containers can be deployed into a VNet for private communication</li>
+            </ul>
+          </div>
+
+          <h3>Container Groups</h3>
+          <p>The top-level resource in ACI. Like a Kubernetes pod — a collection of containers scheduled on the same host, sharing lifecycle, network, and storage.</p>
+          <div class="key-points">
+            <ul>
+              <li>Containers in a group share a public IP and expose ports (port mapping not supported — containers share port namespace)</li>
+              <li>Deploy multi-container groups using: ARM template (JSON), Bicep (recommended), or YAML files</li>
+              <li>Resources for the group = sum of all containers' resource requests</li>
+              <li>Use cases: web app + content puller, app + logging sidecar, front-end + back-end, monitoring + app</li>
+            </ul>
+          </div>
+
+          <h3>Container Images</h3>
+          <p>A container image is a lightweight, portable, executable package containing code, runtime, system tools, libraries, and settings. First step to deploy ACI = <strong>create a container image using Docker</strong>.</p>
+
+          <h3>Deploy Multiple Containers</h3>
+          <p>Use an orchestrator such as <strong>Azure Kubernetes Service (AKS)</strong> to deploy and manage multiple containers.</p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function markReviewed() {
+  localStorage.setItem('az104_reviewed_module_5', '1');
+  const btn = event.target;
+  btn.textContent = '✓ Reviewed!';
+  btn.classList.remove('btn-success');
+  btn.classList.add('btn-secondary');
+  btn.disabled = true;
+}
+const sections = document.querySelectorAll('.submodule-section');
+const navLinks = document.querySelectorAll('.review-sidebar nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('current', a.getAttribute('href') === '#' + current); });
+});
+</script>
+</body>
+</html>

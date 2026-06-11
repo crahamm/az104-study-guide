@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 2 Quiz — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-2-review.html" class="btn btn-secondary btn-sm">Review Notes</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 2 Quiz</h1>
+    <p class="subtitle">Manage Identities &amp; Governance — 20–25% of exam</p>
+  </div>
+
+  <div class="score-panel" id="score-panel">
+    <div class="score-number" id="score-pct"></div>
+    <div class="score-label" id="score-label"></div>
+    <div class="score-bar-track"><div class="score-bar-fill" id="score-bar"></div></div>
+    <div class="score-actions">
+      <button class="btn btn-secondary" onclick="retakeQuiz()">Retake Quiz</button>
+      <button class="btn btn-success" id="btn-complete" onclick="markComplete()" disabled>Mark Module Complete</button>
+      <a href="module-3-quiz.html" class="btn btn-primary">Next Module →</a>
+    </div>
+  </div>
+
+  <div class="quiz-controls">
+    <div class="quiz-meta">
+      <span>Questions: <strong id="q-count"></strong></span>
+      <span>Pass threshold: <strong>70%</strong></span>
+    </div>
+    <button class="btn btn-primary" onclick="submitQuiz()" id="btn-submit">Submit Quiz</button>
+    <button class="btn btn-secondary" onclick="retakeQuiz()">Shuffle &amp; Restart</button>
+  </div>
+
+  <div id="quiz-container"></div>
+
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // From knowledge checks
+  { q: "When considering Microsoft Entra ID as a solution for managing internet-based applications, which authentication protocol does it primarily use?", options: ["OAuth", "Kerberos", "LDAP", "NTLM"], answer: 0, source: "2.1 Knowledge Check" },
+  { q: "Which feature of Microsoft Entra ID P1 and P2 plans provides operational insights and health monitoring of the identity infrastructure?", options: ["Microsoft Entra Connect Health", "Microsoft Entra ID Protection", "Conditional Access", "Cloud App Discovery"], answer: 0, source: "2.1 Knowledge Check" },
+  { q: "Which of the following is a limitation of Microsoft Entra ID compared to AD DS?", options: ["Lack of support for Group Policy Objects (GPOs)", "No support for multi-factor authentication", "Cannot be used with Microsoft 365", "Does not support OAuth"], answer: 0, source: "2.1 Knowledge Check" },
+  { q: "Which service in Microsoft Entra ID P1 and P2 plans helps in bridging on-premises identity stores like AD DS with Microsoft Entra ID?", options: ["Microsoft Identity Manager", "Microsoft Entra Connect Health", "Entra ID Protection", "Azure AD Domain Services"], answer: 0, source: "2.1 Knowledge Check" },
+  { q: "Your company needs to identify irregular sign-in activities in Microsoft Entra ID. Which feature should be utilized?", options: ["Identity protection", "Conditional Access", "Connect Health", "Self-service group management"], answer: 0, source: "2.1 Knowledge Check" },
+  { q: "Which Microsoft Entra ID feature is included in both P1 and P2 plans and allows for configuring access based on device, group, or location?", options: ["Conditional Access", "PIM", "Identity Protection", "Self-service password reset"], answer: 0, source: "2.1 Knowledge Check" },
+  { q: "Your organization is considering Microsoft Entra Domain Services to replace on-premises AD DS. Which limitation should be considered?", options: ["Organizational unit structure is flat", "No support for Kerberos authentication", "Cannot sync with on-premises AD", "Does not support SAML"], answer: 0, source: "2.1 Knowledge Check" },
+  { q: "Which type of Microsoft Entra ID group should you create to manage user access to a shared mailbox, calendar, and files?", options: ["Microsoft 365 group", "Security group", "Dynamic device group", "Distribution group"], answer: 0, source: "2.2 Knowledge Check" },
+  { q: "What is the main difference between a security group and a Microsoft 365 group in Microsoft Entra ID?", options: ["Security groups manage permissions, while Microsoft 365 groups provide collaboration features", "Security groups are only for cloud users; Microsoft 365 groups are for hybrid users", "Microsoft 365 groups support dynamic membership; security groups do not", "Security groups require P2 licensing; Microsoft 365 groups require P1"], answer: 0, source: "2.2 Knowledge Check" },
+  { q: "You are managing licenses for a newly formed large team that needs Microsoft 365 services. What is the most efficient way to assign licenses?", options: ["Assign licenses to the team through a security group", "Assign licenses one by one to each user in the portal", "Use PowerShell to script individual license assignments", "Create a separate subscription for the new team"], answer: 0, source: "2.2 Knowledge Check" },
+  { q: "How should an administrator handle users in an error state due to 'MutuallyExclusiveViolation' during group-based license assignment?", options: ["Remove conflicting licenses or service plans from the user", "Increase the number of available licenses", "Ensure dependent service plans are reassigned first", "Disable the user account temporarily"], answer: 0, source: "2.2 Knowledge Check" },
+  { q: "A user is unable to receive a license due to a 'CountViolation' error. What should be done?", options: ["Increase the number of available licenses for the product", "Remove conflicting licenses from the user", "Reassign dependent service plans", "Move the user to a different subscription"], answer: 0, source: "2.2 Knowledge Check" },
+  { q: "How many resource groups can a resource be in at the same time?", options: ["One", "Two", "Unlimited", "Depends on the resource type"], answer: 0, source: "2.3 Knowledge Check" },
+  { q: "What Azure feature replicates resources across regions that are at least 300 miles away from each other?", options: ["Region pairs", "Availability zones", "Geo-redundant storage", "Zone-redundant storage"], answer: 0, source: "2.3 Knowledge Check" },
+  { q: "What happens to the resources within a resource group when an action or setting at the Resource Group level is applied?", options: ["The setting is applied to current and future resources", "Only future resources are affected", "Only resources tagged with 'inherit' are affected", "Resources must be individually opted in"], answer: 0, source: "2.3 Knowledge Check" },
+  { q: "What is the purpose of Azure Policy and how does it help in managing resources?", options: ["Azure Policy assesses compliance at scale and enforces organizational and regulatory standards across Azure environments", "Azure Policy replaces RBAC as the access management system", "Azure Policy automatically remediates all non-compliant resources by deleting them", "Azure Policy provides cost management alerts and budgets"], answer: 0, source: "2.4 Knowledge Check" },
+  { q: "What is the purpose of Enforcement Mode in Azure Policy?", options: ["It allows testing the policy's outcome on existing resources without initiating the policy effect", "It permanently disables a policy assignment", "It forces all non-compliant resources to be deleted immediately", "It restricts policy assignments to management groups only"], answer: 0, source: "2.4 Knowledge Check" },
+  { q: "At what levels can Azure Policies be assigned?", options: ["Management Group, Subscription, and Resource Group", "Resource Group and Subscription only", "Management Group and Subscription only", "Resource Group and Resource only"], answer: 0, source: "2.4 Knowledge Check" },
+  { q: "What is a role definition in Azure?", options: ["A collection of permissions with a name that is assignable to a user, group, or application", "The binding of a role to a security principal at a specific scope", "A collection of users, groups, or applications with permissions", "A policy that controls what actions are allowed on a resource"], answer: 0, source: "2.5 Knowledge Check" },
+  { q: "An administrator wants to allow a user to create and manage Azure resources but NOT grant access to others. Which built-in role should be assigned?", options: ["Contributor", "Owner", "User Access Administrator", "Reader"], answer: 0, source: "2.5 Knowledge Check" },
+  { q: "What is the scope inheritance order in Azure RBAC?", options: ["Management group → Subscription → Resource group → Resource", "Subscription → Management group → Resource group → Resource", "Resource group → Subscription → Management group → Resource", "Resource → Resource group → Subscription → Management group"], answer: 0, source: "2.5 Knowledge Check" },
+  { q: "Suppose a team member can't view resources in a resource group. Where would the administrator go to check the team member's access?", options: ["Go to the resource group and select Access control (IAM) > Check Access", "Go to the subscription's Billing blade", "Open the user's profile in Microsoft Entra ID", "Search Activity log for the user's recent actions"], answer: 0, source: "2.5 Knowledge Check" },
+  { q: "An administrator needs to generate a report of role assignments from the last week. Where in the Azure portal would they generate that report?", options: ["Search for Activity log and filter on Create role assignment operation", "Go to Cost Management + Billing", "Open Microsoft Entra ID > Audit Logs", "Navigate to Subscriptions > Access control (IAM) > Download"], answer: 0, source: "2.5 Knowledge Check" },
+  { q: "When is a user considered registered for SSPR?", options: ["They have registered at least the minimum number of required methods", "They have reset their password at least once", "An administrator has manually approved their registration", "They have set up all available authentication methods"], answer: 0, source: "2.6 Knowledge Check" },
+  // Synthesized
+  { q: "Which protocol does Active Directory Domain Services (AD DS) use for authentication (compared to Entra ID)?", options: ["Kerberos", "OAuth", "OpenID Connect", "SAML"], answer: 0, source: "2.1 Content" },
+  { q: "Which Microsoft Entra ID P2-only feature allows you to configure permanent and temporary administrators and define policy workflows for privileged access?", options: ["Privileged Identity Management (PIM)", "Conditional Access", "Identity Protection", "Microsoft Identity Manager"], answer: 0, source: "2.1 Content" },
+  { q: "What tool is recommended for most organizations to synchronize on-premises AD users to Microsoft Entra ID?", options: ["Microsoft Entra Cloud Sync", "Microsoft Entra Connect Sync", "AD FS", "Microsoft Identity Manager"], answer: 0, source: "2.2 Content" },
+  { q: "Dynamic group membership in Microsoft Entra ID requires which license tier?", options: ["Microsoft Entra ID P1", "Microsoft Entra ID Free", "Microsoft Entra ID P2", "Microsoft 365 F1"], answer: 0, source: "2.2 Content" },
+  { q: "Which Azure management group fact is correct?", options: ["A single directory supports up to 10,000 management groups", "Management groups can be nested up to 10 levels deep", "Each subscription can belong to multiple management groups simultaneously", "Management groups can contain resources directly (without subscriptions)"], answer: 0, source: "2.3 Content" },
+  { q: "In the Azure Resource Manager request pipeline, which check happens BEFORE Azure Policy evaluation?", options: ["RBAC (Role-Based Access Control)", "Azure Defender threat detection", "Azure Monitor alerting", "Network security group rules"], answer: 0, source: "2.4 Content" },
+  { q: "How often does the Azure Policy compliance scan automatically run for existing resources?", options: ["Every 24 hours", "Every 1 hour", "Every 7 days", "Every 30 minutes"], answer: 0, source: "2.4 Content" },
+  { q: "Which SSPR authentication method is least recommended and is NOT available for admin accounts?", options: ["Security questions", "Mobile app notification", "Office phone", "Email"], answer: 0, source: "2.6 Content" },
+  { q: "SSPR password writeback to on-premises Active Directory requires which minimum license?", options: ["Microsoft Entra ID P1", "Microsoft Entra ID Free", "Microsoft Entra ID P2 only", "No license required"], answer: 0, source: "2.6 Content" },
+];
+
+let questions = [];
+function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function buildQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  document.getElementById('q-count').textContent = questions.length;
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const opts = shuffle(q.options.map((o, idx) => ({ text: o, origIdx: idx })));
+    const correctShuffledIdx = opts.findIndex(o => o.origIdx === q.answer);
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.dataset.correct = correctShuffledIdx;
+    card.innerHTML = `<div class="q-header"><div class="q-num">${i+1}</div><div><div class="q-text">${q.q}</div><div class="q-source">${q.source}</div></div></div>
+      <ul class="q-options">${opts.map((o,oi)=>`<li><label><input type="radio" name="q${i}" value="${oi}">${o.text}</label></li>`).join('')}</ul>
+      <div class="q-explanation" id="exp-${i}"></div>`;
+    container.appendChild(card);
+  });
+  document.getElementById('score-panel').classList.remove('visible');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function submitQuiz() {
+  const cards = document.querySelectorAll('.question-card');
+  let correct = 0;
+  cards.forEach((card, i) => {
+    const correctIdx = parseInt(card.dataset.correct);
+    const selected = card.querySelector(`input[name="q${i}"]:checked`);
+    const labels = card.querySelectorAll('.q-options label');
+    const exp = document.getElementById(`exp-${i}`);
+    card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+    if (!selected) {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      exp.textContent = `No answer selected. Correct: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible'); return;
+    }
+    const sel = parseInt(selected.value);
+    if (sel === correctIdx) { correct++; card.classList.add('correct'); }
+    else {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      labels[sel].classList.add('wrong-selected');
+      exp.textContent = `Correct answer: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible');
+    }
+  });
+  const pct = Math.round((correct / questions.length) * 100);
+  const pass = pct >= 70;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-pct').className = 'score-number ' + (pass ? 'pass' : 'fail');
+  document.getElementById('score-label').textContent = `${correct} of ${questions.length} correct — ${pass ? 'Passed! ✓' : 'Keep studying and try again.'}`;
+  document.getElementById('score-bar').style.width = pct + '%';
+  document.getElementById('score-bar').className = 'score-bar-fill ' + (pass ? 'pass' : 'fail');
+  document.getElementById('btn-complete').disabled = !pass;
+  document.getElementById('score-panel').classList.add('visible');
+  document.getElementById('score-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('btn-submit').disabled = true;
+}
+
+function retakeQuiz() { buildQuiz(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function markComplete() { localStorage.setItem('az104_quiz_passed_module_2', '1'); document.getElementById('btn-complete').textContent = '✓ Marked Complete'; document.getElementById('btn-complete').disabled = true; }
+
+buildQuiz();
+</script>
+</body>
+</html>

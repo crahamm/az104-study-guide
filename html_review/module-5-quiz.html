@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 5 Quiz — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-5-review.html" class="btn btn-secondary btn-sm">Review Notes</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 5 Quiz</h1>
+    <p class="subtitle">Manage Compute Resources — 20–25% of exam</p>
+  </div>
+
+  <div class="score-panel" id="score-panel">
+    <div class="score-number" id="score-pct"></div>
+    <div class="score-label" id="score-label"></div>
+    <div class="score-bar-track"><div class="score-bar-fill" id="score-bar"></div></div>
+    <div class="score-actions">
+      <button class="btn btn-secondary" onclick="retakeQuiz()">Retake Quiz</button>
+      <button class="btn btn-success" id="btn-complete" onclick="markComplete()" disabled>Mark Module Complete</button>
+      <a href="module-6-quiz.html" class="btn btn-primary">Next Module →</a>
+    </div>
+  </div>
+
+  <div class="quiz-controls">
+    <div class="quiz-meta">
+      <span>Questions: <strong id="q-count"></strong></span>
+      <span>Pass threshold: <strong>70%</strong></span>
+    </div>
+    <button class="btn btn-primary" onclick="submitQuiz()" id="btn-submit">Submit Quiz</button>
+    <button class="btn btn-secondary" onclick="retakeQuiz()">Shuffle &amp; Restart</button>
+  </div>
+
+  <div id="quiz-container"></div>
+
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // From knowledge checks
+  { q: "What scaling option provides more CPU, memory, or disk space without adding more virtual machines?", options: ["Scale up", "Scale out", "Autoscale", "Horizontal scale"], answer: 0, source: "5.3 Knowledge Check" },
+  { q: "Which App Service Plan supports a requirement for 10 staging slots?", options: ["Premium V3 (P1V3)", "Standard S1", "Basic B1", "Isolated V2"], answer: 0, source: "5.3 Knowledge Check" },
+  { q: "Triggering a scale event at 8:00 AM on Saturday is an example of what type of autoscale rule?", options: ["A time-based (schedule) rule", "A metric-based rule", "A CPU threshold rule", "A manual scaling rule"], answer: 0, source: "5.3 Knowledge Check" },
+  { q: "When you clone a configuration across deployment slots, which configuration setting follows the content across the swap?", options: ["Connection strings", "App settings marked as slot-specific", "Custom domain names", "TLS/SSL certificates"], answer: 0, source: "5.4 Knowledge Check" },
+  { q: "Which Azure service provides detailed web page usage analytics including page popularity, time of day, and user location?", options: ["Azure Application Insights", "Azure Monitor", "Azure Advisor", "Azure Log Analytics"], answer: 0, source: "5.4 Knowledge Check" },
+  { q: "Which is a valid automated deployment source for Azure App Service?", options: ["GitHub", "FTP manual upload", "Azure Backup", "Azure Data Factory"], answer: 0, source: "5.4 Knowledge Check" },
+  { q: "Which deployment method is used for deploying multiple containers in Azure Container Instances?", options: ["Using an orchestrator such as Azure Kubernetes Service", "Using Azure Portal container wizard", "Using Azure CLI individually", "Using Azure Service Bus"], answer: 0, source: "5.5 Knowledge Check" },
+  { q: "Which of the following is true regarding isolation in containers compared to virtual machines?", options: ["Containers provide lightweight isolation, but virtual machines offer stronger security boundaries", "Containers provide stronger security boundaries than virtual machines", "Virtual machines and containers provide equivalent isolation", "Containers have no isolation between running applications"], answer: 0, source: "5.5 Knowledge Check" },
+  { q: "Your organization requires applications with strong security boundaries between workloads from competing companies on the same server. Which technology should you choose?", options: ["Virtual machines, because they provide complete isolation and strong security boundaries", "Containers, because they are faster to start and use fewer resources", "Azure Container Instances, because they provide managed isolation", "Azure Functions, because they are serverless"], answer: 0, source: "5.5 Knowledge Check" },
+  { q: "What is the first step to deploy a containerized application using Azure Container Instances?", options: ["Create a container image using Docker", "Provision a VM to host the container", "Create an AKS cluster", "Set up an Azure Container Registry"], answer: 0, source: "5.5 Knowledge Check" },
+  { q: "When deploying a multi-container group in Azure Container Instances, what is crucial for enabling external access to one of the containers?", options: ["Configuring a public IP and exposing the correct port on the container group", "Enabling a service endpoint on the VNet", "Assigning each container its own public IP address", "Using Port mapping between the container group and individual containers"], answer: 0, source: "5.5 Knowledge Check" },
+  // Synthesized
+  { q: "Azure VM compute costs are billed on what basis?", options: ["Per minute (billed per minute, priced per hour)", "Per hour only", "Per day regardless of how long the VM runs", "Per second only"], answer: 0, source: "5.1 Content" },
+  { q: "You stop and deallocate a VM. What happens to storage costs?", options: ["Storage is still charged even when the VM is deallocated", "Storage charges stop as soon as the VM is deallocated", "Storage is only charged for OS disk, not data disks", "Storage is converted to a cheaper tier automatically"], answer: 0, source: "5.1 Content" },
+  { q: "Which VM disk type cannot be used as an OS disk and is optimized for extremely high IOPS workloads like SAP HANA?", options: ["Ultra Disk", "Premium SSD v2", "Standard SSD", "Standard HDD"], answer: 0, source: "5.1 Content" },
+  { q: "What is the purpose of fault domains in an availability set?", options: ["VMs in different fault domains share no common power source or network switch, preventing simultaneous hardware failures", "VMs in different fault domains are rebooted at different times during planned maintenance", "Fault domains determine the geographic region of VM deployment", "Fault domains control the number of IP addresses available to VMs"], answer: 0, source: "5.2 Content" },
+  { q: "Which availability option provides a 99.99% SLA by deploying VMs across physically separate datacenters within a region?", options: ["Availability Zones", "Availability Sets", "VM Scale Sets", "Reserved VM Instances"], answer: 0, source: "5.2 Content" },
+  { q: "Which App Service pricing tier is recommended for new production workloads requiring high performance and scale, while not needing network isolation?", options: ["PremiumV3 (P1V3)", "Standard S1", "Isolated V2", "Basic B1"], answer: 0, source: "5.3 Content" },
+  { q: "Which App Service tiers are intended for development and testing purposes only, with no SLA?", options: ["Free and Shared", "Basic and Standard", "Free and Basic", "Shared and Standard"], answer: 0, source: "5.3 Content" },
+  { q: "What is the benefit of using deployment slots with the 'swap' operation in Azure App Service?", options: ["All instances in the destination slot are warmed before traffic redirects, eliminating downtime", "Code is deployed directly to production with no interim staging", "The swap operation creates a backup of the current production code automatically", "Slots are only available for Windows-based App Service plans"], answer: 0, source: "5.4 Content" },
+  { q: "A container group in Azure Container Instances is analogous to which concept in Kubernetes?", options: ["A pod", "A node", "A namespace", "A deployment"], answer: 0, source: "5.5 Content" },
+  { q: "Azure Container Instances supports deploying multi-container groups using which file format that is most container-focused?", options: ["YAML files", "JSON ARM templates", "Bicep files", "PowerShell scripts"], answer: 0, source: "5.5 Content" },
+  { q: "Which statement about Azure Container Instances and VNet integration is correct?", options: ["Linux container groups can be deployed into an Azure VNet for private communication; they receive no public IP", "All container groups receive a public IP by default regardless of VNet configuration", "Windows containers support VNet deployment; Linux containers do not", "VNet deployment is only available in the Isolated App Service plan"], answer: 0, source: "5.5 Content" },
+];
+
+let questions = [];
+function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function buildQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  document.getElementById('q-count').textContent = questions.length;
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const opts = shuffle(q.options.map((o, idx) => ({ text: o, origIdx: idx })));
+    const correctShuffledIdx = opts.findIndex(o => o.origIdx === q.answer);
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.dataset.correct = correctShuffledIdx;
+    card.innerHTML = `<div class="q-header"><div class="q-num">${i+1}</div><div><div class="q-text">${q.q}</div><div class="q-source">${q.source}</div></div></div>
+      <ul class="q-options">${opts.map((o,oi)=>`<li><label><input type="radio" name="q${i}" value="${oi}">${o.text}</label></li>`).join('')}</ul>
+      <div class="q-explanation" id="exp-${i}"></div>`;
+    container.appendChild(card);
+  });
+  document.getElementById('score-panel').classList.remove('visible');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function submitQuiz() {
+  const cards = document.querySelectorAll('.question-card');
+  let correct = 0;
+  cards.forEach((card, i) => {
+    const correctIdx = parseInt(card.dataset.correct);
+    const selected = card.querySelector(`input[name="q${i}"]:checked`);
+    const labels = card.querySelectorAll('.q-options label');
+    const exp = document.getElementById(`exp-${i}`);
+    card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+    if (!selected) {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      exp.textContent = `No answer selected. Correct: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible'); return;
+    }
+    const sel = parseInt(selected.value);
+    if (sel === correctIdx) { correct++; card.classList.add('correct'); }
+    else {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      labels[sel].classList.add('wrong-selected');
+      exp.textContent = `Correct answer: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible');
+    }
+  });
+  const pct = Math.round((correct / questions.length) * 100);
+  const pass = pct >= 70;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-pct').className = 'score-number ' + (pass ? 'pass' : 'fail');
+  document.getElementById('score-label').textContent = `${correct} of ${questions.length} correct — ${pass ? 'Passed! ✓' : 'Keep studying and try again.'}`;
+  document.getElementById('score-bar').style.width = pct + '%';
+  document.getElementById('score-bar').className = 'score-bar-fill ' + (pass ? 'pass' : 'fail');
+  document.getElementById('btn-complete').disabled = !pass;
+  document.getElementById('score-panel').classList.add('visible');
+  document.getElementById('score-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('btn-submit').disabled = true;
+}
+
+function retakeQuiz() { buildQuiz(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function markComplete() { localStorage.setItem('az104_quiz_passed_module_5', '1'); document.getElementById('btn-complete').textContent = '✓ Marked Complete'; document.getElementById('btn-complete').disabled = true; }
+
+buildQuiz();
+</script>
+</body>
+</html>

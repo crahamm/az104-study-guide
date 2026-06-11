@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 4 Review — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-4-quiz.html" class="btn btn-secondary btn-sm">Take Quiz</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 4: Manage Storage</h1>
+    <p class="subtitle">Storage Accounts · Blob Storage · Storage Security · Azure Files &amp; File Sync &nbsp;|&nbsp; <strong>15–20% of exam</strong></p>
+    <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <button class="btn btn-success btn-sm" onclick="markReviewed()">✓ Mark as Reviewed</button>
+      <a href="module-4-quiz.html" class="btn btn-primary btn-sm">Take Quiz →</a>
+    </div>
+  </div>
+
+  <div class="review-layout">
+    <aside class="review-sidebar">
+      <div class="review-sidebar-header">Contents</div>
+      <nav>
+        <a href="#storage-accounts">4.1 Storage Accounts</a>
+        <a href="#blob-storage">4.2 Blob Storage</a>
+        <a href="#storage-security">4.3 Storage Security</a>
+        <a href="#azure-files">4.4 Azure Files</a>
+      </nav>
+    </aside>
+
+    <div class="review-content">
+
+      <!-- 4.1 Storage Accounts -->
+      <div class="submodule-section" id="storage-accounts">
+        <div class="submodule-header"><h2>4.1 — Configure Storage Accounts</h2></div>
+        <div class="submodule-body">
+
+          <h3>Azure Storage Services</h3>
+          <ul>
+            <li><strong>Blob Storage</strong> — unstructured data (objects); supports block blobs, append blobs, page blobs</li>
+            <li><strong>Azure Files</strong> — managed file shares (SMB/NFS)</li>
+            <li><strong>Queue Storage</strong> — reliable messaging between app components</li>
+            <li><strong>Table Storage</strong> — NoSQL structured data (key-value)</li>
+            <li><strong>Azure Disk Storage</strong> — persistent block storage for IaaS VMs (managed disks)</li>
+          </ul>
+
+          <h3>Storage Account Types</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.85rem;margin-bottom:1rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Type</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Performance</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Redundancy</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Use Case</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);"><strong>Standard GPv2</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">HDD</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">LRS, GRS, RA-GRS, ZRS, GZRS, RA-GZRS</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">General purpose — blobs, files, queues, tables</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>Premium block blobs</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">SSD</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">LRS, ZRS</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">High transaction rates, low latency, smaller objects</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);"><strong>Premium file shares</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">SSD</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">LRS, ZRS</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Enterprise file shares (SMB + NFS)</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>Premium page blobs</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">SSD</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">LRS only</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">OS disks, VM data disks, databases</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Note:</strong> You cannot convert Standard ↔ Premium; must create new account. All types encrypted with SSE at rest by default.</p>
+
+          <h3>Replication Strategies</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.85rem;margin-bottom:1rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Strategy</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Scope</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Read during regional outage?</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Durability</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);"><strong>LRS</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Single datacenter</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">No</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">11 9s — cheapest, lowest durability</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>ZRS</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">3 AZs in one region</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">No</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Zone failure protection</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);"><strong>GRS</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">2 regions (async)</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">No (read only on failover)</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">16 9s</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>RA-GRS</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">2 regions (async)</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>Yes</strong> — read secondary always</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">16 9s</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);"><strong>GZRS</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">3 AZs primary + secondary region</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">No</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">16 9s — best resilience</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>RA-GZRS</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">3 AZs primary + secondary region</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>Yes</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">16 9s — recommended for max</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Microsoft recommends:</strong> GZRS for highest resilience; enable RA-GZRS for read access during regional disaster.</p>
+
+          <h3>Securing Storage Endpoints</h3>
+          <ul>
+            <li>Restrict access to specific subnets via <strong>Firewalls and virtual networks</strong> settings in the storage account</li>
+            <li><strong>Private Endpoints</strong> — assign a private IP from your VNet to the storage account (traffic stays off public internet)</li>
+            <li>Enable <strong>Default to Microsoft Entra authorization</strong> to prefer RBAC over shared keys</li>
+            <li>Use <strong>Azure Key Vault</strong> to manage and rotate storage account access keys</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 4.2 Blob Storage -->
+      <div class="submodule-section" id="blob-storage">
+        <div class="submodule-header"><h2>4.2 — Configure Blob Storage</h2></div>
+        <div class="submodule-body">
+
+          <h3>Blob Containers</h3>
+          <ul>
+            <li>All blobs must be in a container; a storage account can have unlimited containers</li>
+            <li>Container names: lowercase letters, numbers, hyphens; 3–63 characters; must start with letter or number</li>
+            <li><strong>Public access levels:</strong>
+              <ul>
+                <li><strong>Private</strong> (default) — no anonymous access</li>
+                <li><strong>Blob</strong> — anonymous read access to blobs only</li>
+                <li><strong>Container</strong> — anonymous read + list access to entire container</li>
+              </ul>
+            </li>
+            <li>Blob/Container access levels only take effect if <strong>Allow Blob anonymous access</strong> is enabled at the account level</li>
+          </ul>
+
+          <h3>Blob Access Tiers</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.85rem;margin-bottom:1rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Tier</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Latency</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Min Duration</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Use Case</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);"><strong>Hot</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">ms</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">None</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Frequently accessed data; highest storage cost, lowest access cost</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>Cool</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">ms</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">30 days</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Infrequent access; short-term backup, older media</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);"><strong>Cold</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">ms</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">90 days</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Rarely accessed; lower cost than Cool</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);"><strong>Archive</strong></td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Hours</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">180 days</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Offline; compliance/backup data; cheapest storage, expensive access</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Rehydrating from Archive:</strong> Copy Blob (recommended, creates new online blob) or Set Blob Tier. Priority options: Standard (≤15 hrs) or High priority (≤1 hr for &lt;10 GB).</p>
+
+          <h3>Blob Lifecycle Management</h3>
+          <p>Rule-based policy using <strong>If-Then</strong> conditions to automatically transition blobs between tiers or delete them based on age/access patterns.</p>
+          <div class="key-points">
+            <ul>
+              <li>Transition direction: Hot → Cool → Cold → Archive (one way, except Cool → Hot on access)</li>
+              <li>Delete current/previous versions or snapshots at end of lifecycle</li>
+              <li>Apply rules to entire account, specific containers, or subsets by name prefix or blob index tags</li>
+            </ul>
+          </div>
+
+          <h3>Object Replication</h3>
+          <ul>
+            <li>Asynchronously replicates block blobs between storage accounts (same or different regions)</li>
+            <li>Requires <strong>blob versioning enabled</strong> on both source and destination accounts</li>
+            <li>Does NOT support snapshot replication</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 4.3 Storage Security -->
+      <div class="submodule-section" id="storage-security">
+        <div class="submodule-header"><h2>4.3 — Configure Storage Security</h2></div>
+        <div class="submodule-body">
+
+          <h3>Authorization Options (in order of preference)</h3>
+          <ul>
+            <li><strong>Microsoft Entra ID + RBAC</strong> — recommended primary method; use role assignments</li>
+            <li><strong>Shared Access Signatures (SAS)</strong> — time-limited, scoped tokens for delegated access</li>
+            <li><strong>Storage account access keys</strong> — full account access; manage with Azure Key Vault</li>
+          </ul>
+
+          <h3>Shared Access Signatures (SAS)</h3>
+          <p>A URI that grants restricted, time-limited access to Azure Storage resources without sharing account keys.</p>
+
+          <div class="key-points">
+            <h4>SAS Types</h4>
+            <ul>
+              <li><strong>User delegation SAS</strong> — secured with Entra ID credentials; supported for Blob + Data Lake Storage; most secure</li>
+              <li><strong>Service-level SAS</strong> — grants access to specific resources; can be backed by a stored access policy</li>
+              <li><strong>Account-level SAS</strong> — broader access (including service-level capabilities + account-level operations)</li>
+              <li><strong>Stored access policy</strong> — server-side policy that groups SAS tokens; allows revocation without regenerating keys</li>
+            </ul>
+          </div>
+
+          <div class="key-points">
+            <h4>SAS Best Practices</h4>
+            <ul>
+              <li>Always use <strong>HTTPS</strong> for creating and distributing SAS tokens</li>
+              <li>Use <strong>stored access policies</strong> to enable revocation without key rotation</li>
+              <li>Set <strong>near-term expiry times</strong> for unplanned SAS tokens</li>
+              <li>Set start time at least <strong>15 minutes in the past</strong> to handle clock skew</li>
+              <li>Grant <strong>minimum required permissions</strong> only</li>
+              <li>Use SAS for <strong>read access for a limited time</strong> (e.g., temporary image sharing)</li>
+            </ul>
+          </div>
+
+          <h3>Storage Encryption</h3>
+          <ul>
+            <li>All data encrypted at rest by default using <strong>Storage Service Encryption (SSE)</strong> with AES-256</li>
+            <li><strong>Customer-managed keys</strong> — store keys in Azure Key Vault instead of using Microsoft-managed keys</li>
+            <li>Data encrypted in transit by default; always ensure <strong>HTTPS</strong> is enabled (enforce "Secure transfer required")</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 4.4 Azure Files -->
+      <div class="submodule-section" id="azure-files">
+        <div class="submodule-header"><h2>4.4 — Configure Azure Files &amp; File Sync</h2></div>
+        <div class="submodule-body">
+
+          <h3>Azure Files vs Blob Storage</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.5rem;">
+            <div class="key-points">
+              <h4>Azure Files</h4>
+              <ul>
+                <li>True directory object hierarchy</li>
+                <li>SMB and NFS protocols</li>
+                <li>Ideal for lift-and-shift, shared tools, diagnostic data</li>
+                <li>Up to 100 TiB per share, 4 TiB per file</li>
+              </ul>
+            </div>
+            <div class="key-points">
+              <h4>Blob Storage</h4>
+              <ul>
+                <li>Flat namespace (container + blob)</li>
+                <li>REST API, HTTP access</li>
+                <li>Ideal for streaming, random-access, app data accessible from anywhere</li>
+                <li>Massively scalable</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>File Share Snapshots</h3>
+          <ul>
+            <li>Point-in-time, read-only copy of the file share</li>
+            <li><strong>Incremental</strong> — only changes since the last snapshot are saved (reduces cost)</li>
+            <li>Integrates with File Explorer's "Previous Versions" feature</li>
+            <li>Use for recovery from accidental deletions, failed upgrades, ransomware protection</li>
+          </ul>
+
+          <h3>Soft Delete for Azure Files</h3>
+          <ul>
+            <li>Enabled at the <strong>storage account level</strong></li>
+            <li>Deleted file shares transition to a soft-deleted state instead of permanent deletion</li>
+            <li>Retention period: <strong>1–365 days</strong></li>
+            <li>Configure retention to align with organizational data retention requirements</li>
+          </ul>
+
+          <h3>Azure File Sync</h3>
+          <p>Replicates Azure file shares to Windows Servers (on-premises or cloud). Enables distributed caching and performance for data at the location where it's used.</p>
+          <div class="key-points">
+            <ul>
+              <li>Supports multi-site access to the same data</li>
+              <li>Tiering: frequently accessed files cached locally; infrequently accessed files tiered to Azure</li>
+              <li>Use for replacing DFS (Distributed File System) or centralizing file share management</li>
+            </ul>
+          </div>
+
+          <h3>Identity-Based Access for Azure Files</h3>
+          <ul>
+            <li>Supports <strong>Microsoft Entra ID</strong> or <strong>AD DS identities</strong> synced to Entra ID</li>
+            <li>Accessing Azure Files through Azure Storage Explorer requires <strong>Microsoft Entra ID permissions</strong></li>
+          </ul>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function markReviewed() {
+  localStorage.setItem('az104_reviewed_module_4', '1');
+  const btn = event.target;
+  btn.textContent = '✓ Reviewed!';
+  btn.classList.remove('btn-success');
+  btn.classList.add('btn-secondary');
+  btn.disabled = true;
+}
+const sections = document.querySelectorAll('.submodule-section');
+const navLinks = document.querySelectorAll('.review-sidebar nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('current', a.getAttribute('href') === '#' + current); });
+});
+</script>
+</body>
+</html>

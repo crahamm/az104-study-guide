@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 6 Review — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-6-quiz.html" class="btn btn-secondary btn-sm">Take Quiz</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 6: Monitor &amp; Backup Resources</h1>
+    <p class="subtitle">Azure Backup · Protect VMs with Backup · Monitor VMs with Diagnostic Data &nbsp;|&nbsp; <strong>10–15% of exam</strong></p>
+    <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <button class="btn btn-success btn-sm" onclick="markReviewed()">✓ Mark as Reviewed</button>
+      <a href="module-6-quiz.html" class="btn btn-primary btn-sm">Take Quiz →</a>
+    </div>
+  </div>
+
+  <div class="review-layout">
+    <aside class="review-sidebar">
+      <div class="review-sidebar-header">Contents</div>
+      <nav>
+        <a href="#azure-backup">6.1 Azure Backup</a>
+        <a href="#vm-backup">6.2 Protect VMs</a>
+        <a href="#monitor">6.3 VM Monitoring</a>
+      </nav>
+    </aside>
+
+    <div class="review-content">
+
+      <!-- 6.1 Azure Backup -->
+      <div class="submodule-section" id="azure-backup">
+        <div class="submodule-header"><h2>6.1 — Intro to Azure Backup</h2></div>
+        <div class="submodule-body">
+
+          <h3>What is Azure Backup?</h3>
+          <p>An Azure service that provides <strong>zero-infrastructure, secure, cost-effective</strong> backup solutions for all Azure-managed data assets. Managed from a central console (<strong>Backup Center</strong>).</p>
+
+          <h3>What Can Be Backed Up</h3>
+          <ul>
+            <li>Azure VMs (Windows and Linux)</li>
+            <li>Azure Managed Disks</li>
+            <li>Azure File Shares</li>
+            <li>SQL Server and SAP HANA databases in Azure VMs</li>
+            <li>Azure Blobs, Azure Database for PostgreSQL/MySQL</li>
+            <li>Azure Kubernetes clusters</li>
+            <li>On-premises files, folders, system state (via MARS agent)</li>
+          </ul>
+
+          <h3>Key Concepts</h3>
+          <div class="key-points">
+            <h4>RTO and RPO</h4>
+            <ul>
+              <li><strong>Recovery Time Objective (RTO)</strong> — maximum tolerable downtime after a disaster</li>
+              <li><strong>Recovery Point Objective (RPO)</strong> — maximum tolerable data loss measured in time; determines backup frequency</li>
+            </ul>
+          </div>
+
+          <h3>Azure Backup vs Azure Site Recovery</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:0.88rem;margin-bottom:1rem;">
+            <thead><tr style="background:var(--azure-blue-lighter);"><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Feature</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Azure Backup</th><th style="text-align:left;padding:0.4rem;border:1px solid var(--azure-blue-light);">Azure Site Recovery</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Primary goal</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Maintain point-in-time copies; go back in time</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);">Near-real-time replication; enable failover</td></tr>
+              <tr><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Use case</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Accidental deletion, data corruption, ransomware</td><td style="padding:0.35rem;border:1px solid var(--neutral-light);background:var(--neutral-lighter);">Region-wide disasters, business continuity</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Backup Storage Tiers</h3>
+          <ul>
+            <li><strong>Snapshot tier</strong> — stored locally for up to 5 days; fastest recovery (<em>instant restore</em>); retained in customer's subscription</li>
+            <li><strong>Vault-standard tier</strong> — online storage in Recovery Services vault; isolated copy even if source is deleted; GRS recommended for vaults</li>
+            <li><strong>Archive tier</strong> — long-term retention (LTR) for compliance; rarely accessed data at lowest cost</li>
+          </ul>
+
+          <h3>Security Features</h3>
+          <div class="key-points">
+            <ul>
+              <li><strong>Soft delete</strong> — backup data retained for 14 additional days after deletion; protects against accidental/malicious deletion; <strong>free of charge</strong> during retention period</li>
+              <li><strong>Enhanced soft delete</strong> — longer soft-delete period; can be set to "always on" (cannot be turned off)</li>
+              <li><strong>RBAC</strong> — restrict backup/restore operations to authorized Backup Admins</li>
+              <li>Data encrypted in transit and at rest; supports customer-managed keys (CMK) in Key Vault</li>
+              <li>Azure VM backup uses Azure backbone network — no internet connectivity required</li>
+            </ul>
+          </div>
+
+          <h3>Management Tools</h3>
+          <ul>
+            <li><strong>Recovery Services vault</strong> — stores backup data; defines policies; acts as RBAC boundary</li>
+            <li><strong>Backup Center</strong> — single pane of glass across multiple workloads, vaults, subscriptions, regions, and Azure Lighthouse tenants</li>
+            <li><strong>Backup Explorer</strong> — aggregated view of entire backup estate with drill-down troubleshooting</li>
+          </ul>
+
+          <h3>Backup Replication Options for Vaults</h3>
+          <ul>
+            <li><strong>LRS</strong> — lowest cost; basic protection; noncritical scenarios</li>
+            <li><strong>GRS</strong> — recommended for backup scenarios; cross-region restore capability</li>
+            <li><strong>ZRS</strong> — protects against datacenter-level failures; high-availability scenarios</li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- 6.2 Protect VMs -->
+      <div class="submodule-section" id="vm-backup">
+        <div class="submodule-header"><h2>6.2 — Protect Virtual Machines with Azure Backup</h2></div>
+        <div class="submodule-body">
+
+          <h3>VM Backup Process</h3>
+          <ol>
+            <li>Configure backup policy (frequency, retention)</li>
+            <li>At first backup: Azure installs a <strong>backup extension</strong> on the running VM
+              <ul>
+                <li>Windows: <strong>VM Snapshot</strong> extension (uses VSS — Volume Shadow Copy Service)</li>
+                <li>Linux: <strong>VM SnapshotLinux</strong> extension (disk snapshot)</li>
+              </ul>
+            </li>
+            <li>Snapshot is taken → stored locally (snapshot tier) → transferred to vault</li>
+            <li>Subsequent backups transfer only <strong>changed blocks (delta/incremental)</strong></li>
+          </ol>
+          <p><strong>Prerequisite to back up a VM:</strong> Backup extensions must be installed.</p>
+
+          <h3>Backup Types</h3>
+          <div class="key-points">
+            <ul>
+              <li><strong>Full</strong> — entire database; max once per day (daily or weekly interval)</li>
+              <li><strong>Differential</strong> — changes since last full backup; max once per day (not same day as full)</li>
+              <li><strong>Transaction Log</strong> — point-in-time recovery up to a second; configurable every 15 minutes (SQL)</li>
+              <li><strong>Incremental/hourly VM</strong> — Enhanced policy allows hourly VM backups (4, 6, 8, 12, or 24 hr intervals); min RPO of 4 hours</li>
+              <li><strong>Selective disk backup</strong> — back up a subset of disks to reduce cost</li>
+            </ul>
+          </div>
+
+          <h3>VM Snapshot Consistency Levels</h3>
+          <ul>
+            <li><strong>Application consistent</strong> — captures memory and pending I/O (VSS on Windows; pre/post scripts on Linux); best option for databases</li>
+            <li><strong>File system consistent</strong> — consistent snapshot if VSS/scripts fail; apps may need cleanup on startup</li>
+            <li><strong>Crash consistent</strong> — VM was shut down during backup; no I/O or memory captured; least reliable</li>
+          </ul>
+
+          <h3>Restore Options</h3>
+          <div class="key-points">
+            <ul>
+              <li><strong>Create a new VM</strong> — creates a basic VM from a restore point; must be in same region as source</li>
+              <li><strong>Restore disk</strong> — restores disk to a resource group; use to customize VM config or attach to existing VM</li>
+              <li><strong>Replace existing</strong> — replaces disk on existing VM (VM must still exist; not available for encrypted VMs)</li>
+              <li><strong>Cross-region restore</strong> — restore to Azure paired secondary region; supported for Create VM and Restore Disks</li>
+              <li><strong>Cross-subscription restore</strong> — restore to different subscription in same tenant; requires CRR enabled on vault</li>
+              <li><strong>File-level recovery</strong> — mount snapshot via iSCSI initiator to recover individual files (not supported for encrypted VMs — must restore full VM)</li>
+            </ul>
+          </div>
+
+          <h3>Instant Restore</h3>
+          <p>Restores from the <strong>snapshot tier</strong> (local) — faster than vault tier. Snapshots retained locally for up to <strong>5 days</strong>. After 5 days, use vault tier restore.</p>
+
+        </div>
+      </div>
+
+      <!-- 6.3 Monitor VMs -->
+      <div class="submodule-section" id="monitor">
+        <div class="submodule-header"><h2>6.3 — Monitor Azure VMs Using Diagnostic Data</h2></div>
+        <div class="submodule-body">
+
+          <h3>Azure Monitor Overview</h3>
+          <p>Comprehensive monitoring solution for collecting, analyzing, and responding to monitoring data from Azure resources. Two main data types:</p>
+          <ul>
+            <li><strong>Metrics</strong> — numerical values at defined intervals (e.g., CPU %, disk ops/sec); retained for <strong>93 days</strong>; stored in Azure Monitor Metrics</li>
+            <li><strong>Logs</strong> — events with timestamps; stored in <strong>Log Analytics workspace</strong>; queried with <strong>KQL (Kusto Query Language)</strong></li>
+          </ul>
+
+          <h3>VM Monitoring Layers</h3>
+          <ol>
+            <li><strong>Host VM</strong> — compute, storage, network allocated by Azure</li>
+            <li><strong>Guest OS</strong> — the operating system running on the VM</li>
+            <li><strong>Client workloads</strong> — services/processes on the OS</li>
+            <li><strong>Applications</strong> — apps running on the VM</li>
+          </ol>
+
+          <h3>Host VM Metrics (automatically collected)</h3>
+          <p>Azure automatically collects these for every VM:</p>
+          <ul>
+            <li>VM availability</li>
+            <li>CPU usage % (average)</li>
+            <li>OS disk usage (total)</li>
+            <li>Network operations (total)</li>
+            <li>Disk operations per second (average)</li>
+          </ul>
+          <p>Use <strong>Azure Monitor Metrics Explorer</strong> to plot, compare, and investigate metrics. Use <strong>Recommended alert rules</strong> for predefined CPU/memory/disk/network/availability thresholds.</p>
+
+          <h3>Activity Logs</h3>
+          <p>Automatically recorded for all Azure resources (VM startup, configuration changes, etc.). Can be sent to:</p>
+          <ul>
+            <li><strong>Azure Monitor Logs</strong> — complex querying, alerts, up to 2-year retention</li>
+            <li><strong>Azure Storage</strong> — cheap long-term archiving</li>
+            <li><strong>Azure Event Hubs</strong> — forward outside Azure</li>
+          </ul>
+
+          <h3>Boot Diagnostics</h3>
+          <p>Host logs for troubleshooting boot issues. Enable at VM creation or afterwards. Provides screenshot from hypervisor and serial console log output (Linux). Stored in a managed storage account.</p>
+
+          <h3>Guest OS and Application Monitoring</h3>
+          <p>Requires installing <strong>Azure Monitor Agent</strong> and creating a <strong>Data Collection Rule (DCR)</strong>.</p>
+          <div class="key-points">
+            <ul>
+              <li>DCR defines <em>what</em> data to collect and <em>where</em> to send it</li>
+              <li>Azure Monitor Metrics — stores metrics (performance counters) only</li>
+              <li>Azure Monitor Logs — stores both metrics AND event logs</li>
+            </ul>
+          </div>
+
+          <h3>VM Insights</h3>
+          <p>Azure Monitor feature that simplifies guest OS monitoring with simplified onboarding, a preconfigured DCR, predefined performance charts and workbooks, and optionally a dependency map of processes and external connections.</p>
+          <p>Use when: you don't know which metric to focus on yet; exploring overall usage and performance.</p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function markReviewed() {
+  localStorage.setItem('az104_reviewed_module_6', '1');
+  const btn = event.target;
+  btn.textContent = '✓ Reviewed!';
+  btn.classList.remove('btn-success');
+  btn.classList.add('btn-secondary');
+  btn.disabled = true;
+}
+const sections = document.querySelectorAll('.submodule-section');
+const navLinks = document.querySelectorAll('.review-sidebar nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('current', a.getAttribute('href') === '#' + current); });
+});
+</script>
+</body>
+</html>

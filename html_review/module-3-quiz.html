@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 3 Quiz — AZ-104</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">AZ-104 <span>Study Guide</span></div>
+  <nav>
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="module-3-review.html" class="btn btn-secondary btn-sm">Review Notes</a>
+  </nav>
+</header>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <h1>Module 3 Quiz</h1>
+    <p class="subtitle">Manage Virtual Networks — 15–20% of exam</p>
+  </div>
+
+  <div class="score-panel" id="score-panel">
+    <div class="score-number" id="score-pct"></div>
+    <div class="score-label" id="score-label"></div>
+    <div class="score-bar-track"><div class="score-bar-fill" id="score-bar"></div></div>
+    <div class="score-actions">
+      <button class="btn btn-secondary" onclick="retakeQuiz()">Retake Quiz</button>
+      <button class="btn btn-success" id="btn-complete" onclick="markComplete()" disabled>Mark Module Complete</button>
+      <a href="module-4-quiz.html" class="btn btn-primary">Next Module →</a>
+    </div>
+  </div>
+
+  <div class="quiz-controls">
+    <div class="quiz-meta">
+      <span>Questions: <strong id="q-count"></strong></span>
+      <span>Pass threshold: <strong>70%</strong></span>
+    </div>
+    <button class="btn btn-primary" onclick="submitQuiz()" id="btn-submit">Submit Quiz</button>
+    <button class="btn btn-secondary" onclick="retakeQuiz()">Shuffle &amp; Restart</button>
+  </div>
+
+  <div id="quiz-container"></div>
+
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // From knowledge checks
+  { q: "Which type of IP address should be used for an Azure resource that needs to connect with Azure public-facing services?", options: ["Public IP address", "Private IP address", "Dynamic IP address", "Reserved IP address"], answer: 0, source: "3.1 Knowledge Check" },
+  { q: "Your organization is planning to implement an Azure Virtual Network to connect multiple Azure resources securely. Which feature allows you to create a virtual representation of your network in the cloud?", options: ["Logical Isolation", "VPN Gateway", "Azure ExpressRoute", "NSG"], answer: 0, source: "3.1 Knowledge Check" },
+  { q: "What must be ensured when creating subnets within a virtual network to avoid IP address conflicts?", options: ["The range for one subnet can't overlap with other subnet IP address ranges in the same virtual network", "Each subnet must use the same address prefix length", "Subnets must be in different availability zones", "Subnets must be created before the VNet is deployed"], answer: 0, source: "3.1 Knowledge Check" },
+  { q: "An Azure virtual machine has lost connection to the internet after being restarted. What could be a reason for this issue related to IP addressing?", options: ["The virtual machine uses a dynamic public IP address", "The NSG has no inbound rules", "The VNet has no subnets", "The VM is in a private VNet with no route to internet"], answer: 0, source: "3.1 Knowledge Check" },
+  { q: "Which scenario requires the use of a static IP address rather than a dynamic IP address in Azure?", options: ["Setting up a DNS server", "Running a temporary test VM", "Hosting a dev/test web app", "Creating a jump server for occasional access"], answer: 0, source: "3.1 Knowledge Check" },
+  { q: "Your company wants to connect its on-premises network to an Azure Virtual Network securely. Which Azure feature facilitates this connection?", options: ["Site-to-Site VPN", "VNet peering", "Application Gateway", "Azure Front Door"], answer: 0, source: "3.1 Knowledge Check" },
+  { q: "What is a key benefit of using Application Security Groups in Azure?", options: ["They allow you to define network security based on application logic rather than IP addresses", "They provide Layer 7 load balancing for web applications", "They automatically generate security rules based on traffic patterns", "They replace Network Security Groups for all scenarios"], answer: 0, source: "3.2 Knowledge Check" },
+  { q: "What happens if a new NSG security rule is created with a priority value that is HIGHER than existing rules?", options: ["The new rule is processed after existing rules with lower priority values", "The new rule overrides all existing rules immediately", "The new rule is rejected because priority values must be unique", "The new rule is processed first regardless of priority number"], answer: 0, source: "3.2 Knowledge Check" },
+  { q: "In a scenario where virtual machines need to be grouped based on their functions with specific security rules for each group, what Azure service should you use?", options: ["Application Security Groups", "Network Security Groups", "Azure Firewall", "Route Tables"], answer: 0, source: "3.2 Knowledge Check" },
+  { q: "What is the role of a demilitarized zone (DMZ) when using network security groups in Azure?", options: ["To act as a buffer between internal resources and external traffic", "To provide load balancing between multiple NSGs", "To store NSG rule backups for disaster recovery", "To bypass NSG rules for trusted traffic"], answer: 0, source: "3.2 Knowledge Check" },
+  { q: "When virtual networks are successfully peered, what is the peering status for both virtual networks?", options: ["Connected", "Initiated", "Pending", "Active"], answer: 0, source: "3.4 Knowledge Check" },
+  { q: "What approach enables peered virtual networks to share a gateway and get access to resources?", options: ["Gateway transit", "Service chaining", "VNet peering", "User-defined routes"], answer: 0, source: "3.4 Knowledge Check" },
+  { q: "How is Azure Virtual Network peering best described?", options: ["Traffic between virtual networks is kept on the Microsoft backbone network", "Traffic between virtual networks is routed through the public internet", "Virtual networks are merged into a single address space", "Peering requires a VPN gateway in each VNet"], answer: 0, source: "3.4 Knowledge Check" },
+  { q: "Which layer of the OSI model does Azure Load Balancer function at?", options: ["Layer 4", "Layer 3", "Layer 7", "Layer 2"], answer: 0, source: "3.6 Knowledge Check" },
+  { q: "Which component ensures that traffic from a specific client is always directed to the same server in the backend pool of a Load Balancer?", options: ["Session persistence", "Health probe", "Load-balancing rule", "NAT rule"], answer: 0, source: "3.6 Knowledge Check" },
+  { q: "Which Load Balancer component ensures that backend instances no longer responding on TCP port 443 stop receiving traffic?", options: ["Health probe", "Session persistence", "Inbound NAT rule", "Backend pool"], answer: 0, source: "3.6 Knowledge Check" },
+  { q: "Which Azure Application Gateway feature can protect web applications against SQL injection attacks?", options: ["Web application firewall", "TLS termination", "Connection draining", "Autoscaling"], answer: 0, source: "3.7 Knowledge Check" },
+  { q: "You want Application Gateway to stop forwarding traffic to a VM that becomes unresponsive, without manual intervention. Which feature accomplishes this?", options: ["Health probes", "Connection draining", "Session affinity", "Autoscaling"], answer: 0, source: "3.7 Knowledge Check" },
+  { q: "You need to remove a backend server from Application Gateway for maintenance while allowing existing connections to complete naturally. Which feature should you use?", options: ["Connection draining", "Session affinity", "Health probes", "URL routing"], answer: 0, source: "3.7 Knowledge Check" },
+  { q: "Which Network Watcher tool provides a visualization of all network resources and their relationships, useful at the start of troubleshooting?", options: ["Topology", "Connection monitor", "IP flow verify", "Traffic analytics"], answer: 0, source: "3.8 Knowledge Check" },
+  { q: "Which Network Watcher tool detects whether changes in NSG rules affect connectivity between IaaS VMs on a virtual network over time?", options: ["Connection monitor", "IP flow verify", "Effective security rules", "Packet capture"], answer: 0, source: "3.8 Knowledge Check" },
+  { q: "Which Network Watcher tool should you use to detect if on-premises devices can't communicate with an Azure virtual machine over a VPN connection?", options: ["VPN troubleshoot", "Connection troubleshoot", "Next hop", "NSG diagnostics"], answer: 0, source: "3.8 Knowledge Check" },
+  // Synthesized
+  { q: "Azure Network Watcher is designed to diagnose connectivity issues for which type of Azure resources?", options: ["IaaS resources (VMs, VNets, load balancers)", "PaaS services (App Service, Azure SQL)", "Both IaaS and PaaS equally", "Only Azure VMs"], answer: 0, source: "3.8 Content" },
+  { q: "What is the difference between Connection monitor and Connection troubleshoot in Network Watcher?", options: ["Connection monitor tracks connectivity over time; Connection troubleshoot tests at a specific point in time", "Connection monitor is only for VPN connections; Connection troubleshoot is for VMs", "Connection troubleshoot provides continuous monitoring; Connection monitor does point-in-time tests", "They are identical tools with different names"], answer: 0, source: "3.8 Content" },
+  { q: "Which Network Watcher tool would you use to identify which NSG rule is blocking traffic between two VMs based on a specific source IP, destination IP, port, and protocol?", options: ["IP flow verify", "Effective security rules", "NSG diagnostics", "Next hop"], answer: 0, source: "3.8 Content" },
+  { q: "Azure Application Gateway operates at which OSI layer?", options: ["Layer 7 (Application)", "Layer 4 (Transport)", "Layer 3 (Network)", "Layer 2 (Data Link)"], answer: 0, source: "3.7 Content" },
+  { q: "VNet peering is non-transitive. What does this mean?", options: ["If VNet A is peered with B, and B is peered with C, A cannot communicate with C unless A is also directly peered with C", "Once established, peering connections cannot be modified", "Peering only works for VNets in the same subscription", "Traffic between peered VNets passes through a transit gateway automatically"], answer: 0, source: "3.4 Content" },
+  { q: "Which route type in Azure is automatically created by the platform and handles default traffic flows within and between VNets?", options: ["System routes", "User-defined routes", "BGP routes", "Custom routes"], answer: 0, source: "3.5 Content" },
+  { q: "An internal Azure Load Balancer is best suited for which scenario?", options: ["Load balancing between the front-end web tier and back-end processing VMs within a VNet", "Distributing internet traffic to public-facing web servers", "Routing traffic between Azure regions", "Providing SSL termination for HTTPS traffic"], answer: 0, source: "3.6 Content" },
+];
+
+let questions = [];
+function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function buildQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  document.getElementById('q-count').textContent = questions.length;
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const opts = shuffle(q.options.map((o, idx) => ({ text: o, origIdx: idx })));
+    const correctShuffledIdx = opts.findIndex(o => o.origIdx === q.answer);
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.dataset.correct = correctShuffledIdx;
+    card.innerHTML = `<div class="q-header"><div class="q-num">${i+1}</div><div><div class="q-text">${q.q}</div><div class="q-source">${q.source}</div></div></div>
+      <ul class="q-options">${opts.map((o,oi)=>`<li><label><input type="radio" name="q${i}" value="${oi}">${o.text}</label></li>`).join('')}</ul>
+      <div class="q-explanation" id="exp-${i}"></div>`;
+    container.appendChild(card);
+  });
+  document.getElementById('score-panel').classList.remove('visible');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function submitQuiz() {
+  const cards = document.querySelectorAll('.question-card');
+  let correct = 0;
+  cards.forEach((card, i) => {
+    const correctIdx = parseInt(card.dataset.correct);
+    const selected = card.querySelector(`input[name="q${i}"]:checked`);
+    const labels = card.querySelectorAll('.q-options label');
+    const exp = document.getElementById(`exp-${i}`);
+    card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+    if (!selected) {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      exp.textContent = `No answer selected. Correct: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible'); return;
+    }
+    const sel = parseInt(selected.value);
+    if (sel === correctIdx) { correct++; card.classList.add('correct'); }
+    else {
+      card.classList.add('incorrect'); labels[correctIdx].classList.add('correct-answer');
+      labels[sel].classList.add('wrong-selected');
+      exp.textContent = `Correct answer: "${questions[i].options[questions[i].answer]}"`;
+      exp.classList.add('visible');
+    }
+  });
+  const pct = Math.round((correct / questions.length) * 100);
+  const pass = pct >= 70;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-pct').className = 'score-number ' + (pass ? 'pass' : 'fail');
+  document.getElementById('score-label').textContent = `${correct} of ${questions.length} correct — ${pass ? 'Passed! ✓' : 'Keep studying and try again.'}`;
+  document.getElementById('score-bar').style.width = pct + '%';
+  document.getElementById('score-bar').className = 'score-bar-fill ' + (pass ? 'pass' : 'fail');
+  document.getElementById('btn-complete').disabled = !pass;
+  document.getElementById('score-panel').classList.add('visible');
+  document.getElementById('score-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('btn-submit').disabled = true;
+}
+
+function retakeQuiz() { buildQuiz(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function markComplete() { localStorage.setItem('az104_quiz_passed_module_3', '1'); document.getElementById('btn-complete').textContent = '✓ Marked Complete'; document.getElementById('btn-complete').disabled = true; }
+
+buildQuiz();
+</script>
+</body>
+</html>
